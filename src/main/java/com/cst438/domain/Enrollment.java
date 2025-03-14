@@ -15,11 +15,13 @@ public class Enrollment {
     // add additional attribute for grade
     int grade;
     // create relationship between enrollment and user entities
-    @OneToMany(mappedBy = "enrollment")
-    List<User> users;
+    @ManyToOne
+            @JoinTable(name = "user_table")
+    private User user;
     // create relationship between enrollment and section entities
-    @OneToMany(mappedBy = "enrollment")
-    List<Section> sections;
+    @ManyToOne
+            @JoinColumn(name = "section_no")
+    private Section section;
     // add getter/setter methods
     public int getEnrollmentId() {
         return enrollmentId;
@@ -37,19 +39,19 @@ public class Enrollment {
         this.grade = grade;
     }
 
-    public List<User> getUsers() {
-        return users;
+    public User getUser() {
+        return user;
     }
 
-    public void setUsers(List<User> users) {
-        this.users = users;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public List<Section> getSections() {
-        return sections;
+    public Section getSection() {
+        return section;
     }
 
-    public void setSections(List<Section> sections) {
-        this.sections = sections;
+    public void setSection(Section section) {
+        this.section = section;
     }
 }

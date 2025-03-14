@@ -14,6 +14,9 @@ public class Assignment {
  
     // TODO  complete this class
     // add additional attributes for title, dueDate
+    String title;
+    Date dueDate;
     // add relationship between assignment and section entities
+
     // add getter and setter methods
 }
