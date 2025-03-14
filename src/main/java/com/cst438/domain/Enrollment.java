@@ -13,7 +13,7 @@ public class Enrollment {
 	
 	// TODO complete this class
     // add additional attribute for grade
-    int grade;
+    String grade;
     // create relationship between enrollment and user entities
     @ManyToOne
             @JoinColumn(name = "user_id")
@@ -31,11 +31,11 @@ public class Enrollment {
         this.enrollmentId = enrollmentId;
     }
 
-    public int getGrade() {
+    public String getGrade() {
         return grade;
     }
 
-    public void setGrade(int grade) {
+    public void setGrade(String grade) {
         this.grade = grade;
     }
 
