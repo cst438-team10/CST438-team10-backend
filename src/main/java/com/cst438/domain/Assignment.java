@@ -17,6 +17,40 @@ public class Assignment {
     String title;
     Date dueDate;
     // add relationship between assignment and section entities
+    @ManyToOne
+    @JoinColumn(name = "section_no", nullable = false)
+    private Section section;
 
     // add getter and setter methods
+    public int getAssignmentId() {
+        return assignmentId;
+    }
+
+    public void setAssignmentId(int assignmentId) {
+        this.assignmentId = assignmentId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Date getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(Date dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public Section getSection() {
+        return section;
+    }
+
+    public void setSection(Section section) {
+        this.section = section;
+    }
 }
