@@ -1,13 +1,21 @@
 package com.cst438.controller;
 
+import com.cst438.domain.Enrollment;
+import com.cst438.domain.EnrollmentRepository;
+import com.cst438.domain.GradeRepository;
+import com.cst438.domain.Section;
 import com.cst438.dto.GradeDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 public class GradeController {
-
+    @Autowired
+    GradeRepository gradeRepository;
+    @Autowired
+    EnrollmentRepository enrollmentRepository;
     // instructor gets grades for assignment ordered by student name
     // user must be instructor for the section
     /**
@@ -25,7 +33,7 @@ public class GradeController {
         // hint: use te enrollment repository method findEnrollmentsBySectionOrderByStudentName.
         // for each enrollment, get the grade related to the assignment and enrollment
         // hint: use the gradeRepository findByEnrollmentIdAndAssignmentId method.
-
+        List<Enrollment> enrollments = enrollmentRepository.findEnrollmentsBySectionNoOrderByStudentName();
 
         return null;
     }
