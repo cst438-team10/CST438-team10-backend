@@ -16,11 +16,11 @@ public class Enrollment {
     String grade;
     // create relationship between enrollment and user entities
     @ManyToOne
-            @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id")
     private User student;
     // create relationship between enrollment and section entities
     @ManyToOne
-            @JoinColumn(name = "section_no")
+    @JoinColumn(name = "section_no")
     private Section section;
     // add getter/setter methods
     public int getEnrollmentId() {
