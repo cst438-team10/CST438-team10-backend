@@ -16,8 +16,8 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:3000")
 public class EnrollmentController {
 
-@Autowired
-EnrollmentRepository enrollmentRepository;
+    @Autowired
+    EnrollmentRepository enrollmentRepository;
     /**
      instructor gets list of enrollments for a section
      list of enrollments returned is in order by student name
