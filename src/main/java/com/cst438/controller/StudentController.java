@@ -78,9 +78,9 @@ GradeRepository gradeRepository;
 
         List<AssignmentStudentDTO> assignmentDTOs = new ArrayList<>();
         for (Assignment assignment : assignments) {
-            List<Grade> grades = (List<Grade>) gradeRepository.findByEnrollmentIdAndAssignmentId(enrollments.get(0).getEnrollmentId(), assignment.getAssignmentId());
-            for (Grade grade : grades) {
                 for (Enrollment enrollment : enrollments) {
+                    List<Grade> grades = (List<Grade>) gradeRepository.findByEnrollmentIdAndAssignmentId(enrollment.getEnrollmentId(), assignment.getAssignmentId());
+                    for (Grade grade : grades) {
                     AssignmentStudentDTO dto = new AssignmentStudentDTO(
                             assignment.getAssignmentId(),
                             assignment.getTitle(),
