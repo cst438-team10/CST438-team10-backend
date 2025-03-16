@@ -2,24 +2,22 @@ package com.cst438.controller;
 
 import com.cst438.domain.*;
 import com.cst438.dto.AssignmentDTO;
-import com.cst438.dto.AssignmentStudentDTO;
-import com.cst438.dto.GradeDTO;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
 public class AssignmentController {
+
+    AssignmentRepository assignmentRepository;
 
     /**
      instructor lists assignments for a section.
@@ -29,13 +27,20 @@ public class AssignmentController {
     @GetMapping("/sections/{secNo}/assignments")
     public List<AssignmentDTO> getAssignments(
             @PathVariable("secNo") int secNo) {
-		
 		// hint: use the assignment repository method 
 		//  findBySectionNoOrderByDueDate to return 
 		//  a list of assignments
+        List<Assignment> assignments = assignmentRepository.findBySectionNoOrderByDueDate(secNo);
+        if(assignments == null){
+            System.out.println("Assignments not found with section number: "+ secNo);
+            return null;
+        }
+        List<AssignmentDTO> assignmentDTOs = new ArrayList<>();
+        for (Assignment assignment : assignments) {
+            assignmentDTOs.add(new AssignmentDTO(assignment.getAssignmentId(), assignment.getTitle(), assignment.getDueDate().toString(), assignment.getSection().getCourse().toString(), assignment.getSection().getSecId(), assignment.getSection().getSectionNo()));
+        }
 
-        // TODO remove the following line when done
-        return null;
+        return assignmentDTOs;
     }
 
     /**
@@ -46,10 +51,26 @@ public class AssignmentController {
     @PostMapping("/assignments")
     public AssignmentDTO createAssignment(
             @RequestBody AssignmentDTO dto) {
+        Assignment assignment = new Assignment();
+        Section section = new Section();
+        Course course = new Course();
 
-        // TODO remove the following line when done
+        course.setCourseId(dto.courseId());
 
-        return null;
+        section.setSectionNo(dto.secNo());
+        section.setSecId(dto.secId());
+        section.setCourse(course);
+
+        assignment.setAssignmentId(dto.id());
+        assignment.setTitle(dto.title());
+        assignment.setDueDate(Date.valueOf(dto.dueDate()));
+        assignment.setSection(section);
+
+        // Save the assignment using the repository
+        Assignment savedAssignment = assignmentRepository.save(assignment);
+
+        // Convert saved assignment back to DTO
+        return new AssignmentDTO(savedAssignment.getAssignmentId(), savedAssignment.getTitle(), savedAssignment.getDueDate().toString(), savedAssignment.getSection().getCourse().toString(), savedAssignment.getSection().getSecId(), savedAssignment.getSection().getSectionNo());
     }
 
     /**
@@ -60,10 +81,17 @@ public class AssignmentController {
      */
     @PutMapping("/assignments")
     public AssignmentDTO updateAssignment(@RequestBody AssignmentDTO dto) {
+        Assignment assignment = assignmentRepository.findById(dto.id()).orElse(null);
 
-        // TODO remove the following line when done
+        if(assignment == null) {
+           System.out.println("No Assignment found with id: "+dto.id());
+           return null;
+        }
+        assignment.setTitle(dto.title());
+        assignment.setDueDate(Date.valueOf(dto.dueDate()));
 
-        return null;
+        Assignment updatedAssignment = assignmentRepository.save(assignment);
+        return new AssignmentDTO(updatedAssignment.getAssignmentId(), updatedAssignment.getTitle(), updatedAssignment.getDueDate().toString(), updatedAssignment.getSection().getCourse().toString(), updatedAssignment.getSection().getSecId(), updatedAssignment.getSection().getSectionNo());
     }
 
 
@@ -73,7 +101,11 @@ public class AssignmentController {
      */
     @DeleteMapping("/assignments/{assignmentId}")
     public void deleteAssignment(@PathVariable("assignmentId") int assignmentId) {
+        if (!assignmentRepository.existsById(assignmentId)) {
+            System.out.println("No Assignment found with id: "+ assignmentId);
+            return;
+        }
 
-        // TODO
+        assignmentRepository.deleteById(assignmentId);
     }
 }
