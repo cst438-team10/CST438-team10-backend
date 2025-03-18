@@ -40,6 +40,7 @@ public class StudentScheduleController {
         // list course_id, sec_id, title, credit, grade
         // hint: use enrollment repository method findEnrollmentByStudentIdOrderByTermId
         // remove the following line when done
+
         List<Enrollment> enrollments = enrollmentRepository.findEnrollmentsByStudentIdOrderByTermId(studentId);
         List<EnrollmentDTO> dtos = new ArrayList<>();
         for (Enrollment e : enrollments) {
