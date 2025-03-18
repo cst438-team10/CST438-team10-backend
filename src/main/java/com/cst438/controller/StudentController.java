@@ -16,8 +16,14 @@ import java.util.Optional;
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
 public class StudentController {
+    @Autowired
+EnrollmentRepository enrollmentRepository;
 
+    @Autowired
+AssignmentRepository assignmentRepository;
 
+    @Autowired
+GradeRepository gradeRepository;
 
     /**
      students lists there enrollments given year and semester value
@@ -29,12 +35,32 @@ public class StudentController {
            @RequestParam("year") int year,
            @RequestParam("semester") String semester,
            @RequestParam("studentId") int studentId) {
+       //  hint: use enrollment repository method findByYearAndSemesterOrderByCourseId
 
+       List<Enrollment> enrollments = enrollmentRepository.findByYearAndSemesterOrderByCourseId(year, semester, studentId);
+       List<EnrollmentDTO> enrollmentDTOs = new ArrayList<>();
 
-     // TODO
-	 //  hint: use enrollment repository method findByYearAndSemesterOrderByCourseId
-     //  remove the following line when done
-       return null;
+       for (Enrollment enrollment : enrollments) {
+           EnrollmentDTO dto = new EnrollmentDTO(
+                   enrollment.getEnrollmentId(),
+                   enrollment.getGrade(),
+                   enrollment.getUser().getId(),
+                   enrollment.getUser().getName(),
+                   enrollment.getUser().getEmail(),
+                   enrollment.getSection().getCourse().getCourseId(),
+                   enrollment.getSection().getCourse().getTitle(),
+                   enrollment.getSection().getSecId(),
+                   enrollment.getSection().getSectionNo(),
+                   enrollment.getSection().getBuilding(),
+                   enrollment.getSection().getRoom(),
+                   enrollment.getSection().getTimes(),
+                   enrollment.getSection().getCourse().getCredits(),
+                   enrollment.getSection().getTerm().getYear(),
+                   enrollment.getSection().getTerm().getSemester()
+           );
+           enrollmentDTOs.add(dto);
+       }
+       return enrollmentDTOs;
    }
 
     /**
@@ -48,13 +74,33 @@ public class StudentController {
             @RequestParam("year") int year,
             @RequestParam("semester") String semester) {
 
-        // TODO remove the following line when done
-
         // return a list of assignments and (if they exist) the assignment grade
         //  for all sections that the student is enrolled for the given year and semester
         //  hint: use the assignment repository method findByStudentIdAndYearAndSemesterOrderByDueDate
+        List<Assignment> assignments = assignmentRepository.findByStudentIdAndYearAndSemesterOrderByDueDate(studentId, year, semester);
+        List<Enrollment> enrollments = enrollmentRepository.findByYearAndSemesterOrderByCourseId(year, semester, studentId);
 
-        return null;
+        List<AssignmentStudentDTO> assignmentDTOs = new ArrayList<>();
+        for (Assignment assignment : assignments) {
+                for (Enrollment enrollment : enrollments) {
+                    //List<Grade> grades = (List<Grade>) gradeRepository.findByEnrollmentIdAndAssignmentId(enrollment.getEnrollmentId(), assignment.getAssignmentId());
+                    //for (Grade grade : grades) {
+                    Grade grade = gradeRepository.findByEnrollmentIdAndAssignmentId(enrollment.getEnrollmentId(), assignment.getAssignmentId());
+                    Integer score = (grade != null) ? grade.getScore() : null;
+                    AssignmentStudentDTO dto = new AssignmentStudentDTO(
+                            assignment.getAssignmentId(),
+                            assignment.getTitle(),
+                            assignment.getDueDate(),
+                            enrollment.getSection().getCourse().getCourseId(),
+                            assignment.getSection().getSecId(),
+                            score
+                    );
+                    assignmentDTOs.add(dto);
+                //}
+
+                }
+
+        }
+        return assignmentDTOs;
     }
-
 }
