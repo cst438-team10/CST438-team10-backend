@@ -17,11 +17,11 @@ public class SectionControllerSystemTest {
     // of the Chrome driver.
     //  for WinOS the file name will be chromedriver.exe
     //  for MacOS the file name will be chromedriver
-    public static final String CHROME_DRIVER_FILE_LOCATION =
-            "C:/chromedriver_win32/chromedriver.exe";
-
     //public static final String CHROME_DRIVER_FILE_LOCATION =
-    //        "~/chromedriver_macOS/chromedriver";
+    //        "C:/chromedriver_win32/chromedriver.exe";
+
+    public static final String CHROME_DRIVER_FILE_LOCATION =
+            "~/chromedriver_macOS/chromedriver";
     public static final String URL = "http://localhost:3000";
 
     public static final int SLEEP_DURATION = 1000; // 1 second.
