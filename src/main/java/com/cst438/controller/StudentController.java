@@ -16,9 +16,13 @@ import java.util.Optional;
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
 public class StudentController {
-
+    @Autowired
 EnrollmentRepository enrollmentRepository;
+
+    @Autowired
 AssignmentRepository assignmentRepository;
+
+    @Autowired
 GradeRepository gradeRepository;
 
     /**
@@ -79,20 +83,22 @@ GradeRepository gradeRepository;
         List<AssignmentStudentDTO> assignmentDTOs = new ArrayList<>();
         for (Assignment assignment : assignments) {
                 for (Enrollment enrollment : enrollments) {
-                    List<Grade> grades = (List<Grade>) gradeRepository.findByEnrollmentIdAndAssignmentId(enrollment.getEnrollmentId(), assignment.getAssignmentId());
-                    for (Grade grade : grades) {
+                    //List<Grade> grades = (List<Grade>) gradeRepository.findByEnrollmentIdAndAssignmentId(enrollment.getEnrollmentId(), assignment.getAssignmentId());
+                    //for (Grade grade : grades) {
+                    Grade grade = gradeRepository.findByEnrollmentIdAndAssignmentId(enrollment.getEnrollmentId(), assignment.getAssignmentId());
+                    Integer score = (grade != null) ? grade.getScore() : null;
                     AssignmentStudentDTO dto = new AssignmentStudentDTO(
                             assignment.getAssignmentId(),
                             assignment.getTitle(),
                             assignment.getDueDate(),
                             enrollment.getSection().getCourse().getCourseId(),
                             assignment.getSection().getSecId(),
-                            grade.getScore()
+                            score
                     );
                     assignmentDTOs.add(dto);
-                }
+                //}
 
-            }
+                }
 
         }
         return assignmentDTOs;
