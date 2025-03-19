@@ -23,6 +23,9 @@ public class EnrollmentController {
     SectionRepository sectionRepository;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    private CourseRepository courseRepository;
+
     /**
      instructor gets list of enrollments for a section
      list of enrollments returned is in order by student name
@@ -32,9 +35,6 @@ public class EnrollmentController {
     public List<EnrollmentDTO> getEnrollments(
             @PathVariable("sectionNo") int sectionNo ) {
 
-        // TODO
-		//  hint: use enrollment repository findEnrollmentsBySectionNoOrderByStudentName method
-        //  remove the following line when done
       List<Enrollment> enrollments = enrollmentRepository.findEnrollmentsBySectionNoOrderByStudentName(sectionNo);
       List<EnrollmentDTO> enrollmentDTOS_list = new ArrayList<>();
       for (Enrollment e: enrollments) {
@@ -57,10 +57,6 @@ public class EnrollmentController {
     @PutMapping("/enrollments")
     public void updateEnrollmentGrade(@RequestBody List<EnrollmentDTO> dlist) {
 
-        // TODO
-        // For each EnrollmentDTO in the list
-        // find the Enrollment entity using enrollmentId
-        // update the grade and save back to database
         for (EnrollmentDTO e : dlist) {
             Enrollment enrollment = enrollmentRepository.findById(e.enrollmentId()).
                     orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "One or more enrollments were not found"));
@@ -78,7 +74,7 @@ public class EnrollmentController {
         User student = userRepository.findById(enrollmentDTO.studentId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Student with such ID not found"));;
 
         Date currentDate = new Date();
-
+        System.out.println(currentDate);
         if(currentDate.after(section.getTerm().getAddDate()) &&
                 currentDate.before(section.getTerm().getAddDeadline())) {
             Enrollment enrollment = new Enrollment();
