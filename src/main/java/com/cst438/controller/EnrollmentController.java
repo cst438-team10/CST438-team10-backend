@@ -1,15 +1,16 @@
 package com.cst438.controller;
 
 
-import com.cst438.domain.Enrollment;
-import com.cst438.domain.EnrollmentRepository;
+import com.cst438.domain.*;
 import com.cst438.dto.EnrollmentDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -18,6 +19,13 @@ public class EnrollmentController {
 
     @Autowired
     EnrollmentRepository enrollmentRepository;
+    @Autowired
+    SectionRepository sectionRepository;
+    @Autowired
+    UserRepository userRepository;
+    @Autowired
+    private CourseRepository courseRepository;
+
     /**
      instructor gets list of enrollments for a section
      list of enrollments returned is in order by student name
@@ -27,9 +35,6 @@ public class EnrollmentController {
     public List<EnrollmentDTO> getEnrollments(
             @PathVariable("sectionNo") int sectionNo ) {
 
-        // TODO
-		//  hint: use enrollment repository findEnrollmentsBySectionNoOrderByStudentName method
-        //  remove the following line when done
       List<Enrollment> enrollments = enrollmentRepository.findEnrollmentsBySectionNoOrderByStudentName(sectionNo);
       List<EnrollmentDTO> enrollmentDTOS_list = new ArrayList<>();
       for (Enrollment e: enrollments) {
@@ -52,16 +57,66 @@ public class EnrollmentController {
     @PutMapping("/enrollments")
     public void updateEnrollmentGrade(@RequestBody List<EnrollmentDTO> dlist) {
 
-        // TODO
-        // For each EnrollmentDTO in the list
-        // find the Enrollment entity using enrollmentId
-        // update the grade and save back to database
         for (EnrollmentDTO e : dlist) {
-            Enrollment enrollment = enrollmentRepository.findById(e.enrollmentId()).orElse(null);
-            if (enrollment != null) {
-                enrollment.setGrade(e.grade());
-                enrollmentRepository.save(enrollment);
-            }
+            Enrollment enrollment = enrollmentRepository.findById(e.enrollmentId()).
+                    orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "One or more enrollments were not found"));
+            enrollment.setGrade(e.grade());
+            enrollmentRepository.save(enrollment);
+        }
+    }
+
+    @PostMapping("/sections/{sectionNo}/enrollments")
+    public EnrollmentDTO createEnrollment(@PathVariable("sectionNo") int sectionNo,
+            @RequestBody EnrollmentDTO enrollmentDTO) {
+
+        Section section = sectionRepository.findById(sectionNo)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Section not found"));
+        User student = userRepository.findById(enrollmentDTO.studentId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Student with such ID not found"));;
+
+        Date currentDate = new Date();
+        System.out.println(currentDate);
+        if(currentDate.after(section.getTerm().getAddDate()) &&
+                currentDate.before(section.getTerm().getAddDeadline())) {
+            Enrollment enrollment = new Enrollment();
+            enrollment.setUser(student);
+            enrollment.setSection(section);
+            enrollment.setGrade(enrollmentDTO.grade());
+            enrollment = enrollmentRepository.save(enrollment);
+
+            EnrollmentDTO savedEnrollmentDTO = new EnrollmentDTO(
+                    enrollment.getEnrollmentId(),
+                    enrollment.getGrade(),
+                    student.getId(),
+                    student.getName(),
+                    student.getEmail(),
+                    section.getCourse().getCourseId(),
+                    section.getCourse().getTitle(),
+                    section.getSecId(),
+                    section.getSectionNo(),
+                    section.getBuilding(),
+                    section.getRoom(),
+                    section.getTimes(),
+                    section.getCourse().getCredits(),
+                    section.getTerm().getYear(),
+                    section.getTerm().getSemester()
+            );
+            return savedEnrollmentDTO;
+        } else {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Enrollment period is closed");
+        }
+    }
+
+    @DeleteMapping("/enrollment/{enrollmentId}/student/{studentId}")
+    public void deleteEnrollment(@PathVariable("enrollmentId") int enrollmentId,
+                                 @PathVariable("studentId") int studentId) {
+        Enrollment enrollment = enrollmentRepository.findById(enrollmentId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enrollment not found"));
+        Section section = sectionRepository.findById(enrollment.getSection().getSectionNo()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Section not found"));
+
+        Date currentDate = new Date();
+        if (currentDate.before(section.getTerm().getDropDeadline())){
+            enrollmentRepository.delete(enrollment);
+        }else{
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Drop deadline period is closed");
         }
     }
 

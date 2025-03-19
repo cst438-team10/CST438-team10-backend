@@ -17,13 +17,13 @@ import java.util.Optional;
 @CrossOrigin(origins = "http://localhost:3000")
 public class StudentController {
     @Autowired
-EnrollmentRepository enrollmentRepository;
+    EnrollmentRepository enrollmentRepository;
 
     @Autowired
-AssignmentRepository assignmentRepository;
+    AssignmentRepository assignmentRepository;
 
     @Autowired
-GradeRepository gradeRepository;
+    GradeRepository gradeRepository;
 
     /**
      students lists there enrollments given year and semester value
