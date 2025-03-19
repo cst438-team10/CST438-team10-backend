@@ -106,7 +106,7 @@ public class EnrollmentController {
         }
     }
 
-    @DeleteMapping("/enrollment/{enrollmentId}/{studentId}")
+    @DeleteMapping("/enrollment/{enrollmentId}/student/{studentId}")
     public void deleteEnrollment(@PathVariable("enrollmentId") int enrollmentId,
                                  @PathVariable("studentId") int studentId) {
         Enrollment enrollment = enrollmentRepository.findById(enrollmentId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enrollment not found"));
