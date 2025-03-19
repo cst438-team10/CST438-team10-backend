@@ -22,6 +22,7 @@ public class Enrollment {
     @ManyToOne
     @JoinColumn(name = "section_no")
     private Section section;
+
     // add getter/setter methods
     public int getEnrollmentId() {
         return enrollmentId;
