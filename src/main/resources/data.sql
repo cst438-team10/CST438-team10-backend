@@ -48,4 +48,7 @@ insert into assignment (assignment_id, section_no, title, due_date) values
 ;
 
 insert into grade (grade_id, enrollment_id, assignment_id, score) values
-( 1, 2, 1, 95);
+( 1, 2, 1, 95),
+( 2, 3, 1, 97),
+( 3, 1, 1, 80)
+;
