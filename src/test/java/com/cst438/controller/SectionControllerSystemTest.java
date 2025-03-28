@@ -19,7 +19,7 @@ public class SectionControllerSystemTest {
     //  for WinOS the file name will be chromedriver.exe
     //  for MacOS the file name will be chromedriver
     public static final String CHROME_DRIVER_FILE_LOCATION =
-            "/Users/henry/chromedriver-mac-x64/chromedriver";
+            "C:\\chromedriver-win64\\chromedriver.exe";
     //    public static final String CHROME_DRIVER_FILE_LOCATION =
 //            "~/chromedriver_macOS/chromedriver";
     public static final String URL = "http://localhost:3000";
@@ -288,7 +288,7 @@ public class SectionControllerSystemTest {
         driver.findElement(By.xpath("//button[contains(text(), 'Save')]")).click();
         Thread.sleep(SLEEP_DURATION);
 
-        WebElement row = driver.findElement(By.xpath("//tr[td[contains(text(), '" + dueDateTable + "')] and td[contains(text(), '" + assignmentName + "')]]"));
+        WebElement row = driver.findElement(By.xpath("//tr[td[contains(text(), '" + dueDateTable + "')] and td[contains(text(), \"" + assignmentName + "\")]]"));
         assertNotNull(row);
         Thread.sleep(SLEEP_DURATION);
         //blahblahh
