@@ -2,8 +2,11 @@ package com.cst438.domain;
 
 import jakarta.persistence.*;
 
+import java.sql.Array;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Assignment {
@@ -11,7 +14,9 @@ public class Assignment {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name="assignment_id")
     private int assignmentId;
- 
+
+    @OneToMany(mappedBy = "assignment", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Grade> grades;
     // TODO  complete this class
     // add additional attributes for title, dueDate
     String title;
@@ -22,6 +27,15 @@ public class Assignment {
     private Section section;
 
     // add getter and setter methods
+
+    public List<Grade> getGrades() {
+        return grades;
+    }
+
+    public void setGrades(ArrayList<Grade> grades) {
+        this.grades = grades;
+    }
+
     public int getAssignmentId() {
         return assignmentId;
     }
