@@ -35,16 +35,16 @@ insert into section(section_no, course_id, sec_id, term_id, building, room, time
 (9, 'cst363', 2, 9, '052', '102', 'M W 2:00-3:50', 'dwisneski@csumb.edu'),
 (10, 'cst438', 1, 9, '052', '222', 'T Th 12:00-1:50', 'dwisneski@csumb.edu');
 
--- insert into enrollment (enrollment_id, grade, section_no, user_id ) values
--- (1, 'A', 1, 3),
--- (2, 'B', 8, 3),
--- (3,  null, 10, 3);
 insert into enrollment (enrollment_id, grade, section_no, user_id ) values
 (1, 'A', 1, 3),
-(4, 'A', 1, 4),
-(5, 'A', 8, 4),
 (2, 'B', 8, 3),
 (3,  null, 10, 3);
+-- insert into enrollment (enrollment_id, grade, section_no, user_id ) values
+-- (1, 'A', 1, 3),
+-- (4, 'A', 1, 4),
+-- (5, 'A', 8, 4),
+-- (2, 'B', 8, 3),
+-- (3,  null, 10, 3);
 
 insert into assignment (assignment_id, section_no, title, due_date) values
 ( 1, 8, 'db homework 1', '2025-02-01'),
