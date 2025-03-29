@@ -18,8 +18,12 @@ public class SectionControllerSystemTest {
     // of the Chrome driver.
     //  for WinOS the file name will be chromedriver.exe
     //  for MacOS the file name will be chromedriver
-    public static final String CHROME_DRIVER_FILE_LOCATION =
-            "C:\\chromedriver-win64\\chromedriver.exe";
+
+    static String osName = System.getProperty("os.name").toLowerCase();
+    Keys myKey = osName.contains("windows") || osName.contains("linux")?Keys.CONTROL:Keys.COMMAND;
+
+    public static final String CHROME_DRIVER_FILE_LOCATION = osName.contains("windows") || osName.contains("linux")?
+            "C:\\chromedriver-win64\\chromedriver.exe": "/Users/henry/chromedriver-mac-x64/chromedriver";
 
     public static final String URL = "http://localhost:3000";
 
@@ -227,7 +231,7 @@ public class SectionControllerSystemTest {
 
         // clear the courseId field and enter cst499
         WebElement courseId = driver.findElement(By.id("ecourseId"));
-        courseId.sendKeys(Keys.chord(Keys.COMMAND,"a", Keys.DELETE));
+        courseId.sendKeys(Keys.chord(myKey,"a", Keys.DELETE));
         Thread.sleep(SLEEP_DURATION);
         courseId.sendKeys("cst499");
         driver.findElement(By.id("save")).click();
@@ -278,6 +282,10 @@ public class SectionControllerSystemTest {
         driver.findElement(By.cssSelector("a[href='/assignments']")).click();
         Thread.sleep(SLEEP_DURATION);
 
+        WebElement table = driver.findElement(By.tagName("table"));
+        List<WebElement> rows = table.findElements(By.tagName("tr"));
+        int beforeSize = rows.size();
+
         driver.findElement(By.xpath("//button[contains(text(), ' Add Assignment + ')]")).click();
         Thread.sleep(SLEEP_DURATION);
 
@@ -287,21 +295,62 @@ public class SectionControllerSystemTest {
         driver.findElement(By.xpath("//button[contains(text(), 'Save')]")).click();
         Thread.sleep(SLEEP_DURATION);
 
+        table = driver.findElement(By.tagName("table"));
+        rows = table.findElements(By.tagName("tr"));
+        int afterSize = rows.size();
+        assertEquals(beforeSize + 1, afterSize);
+
         WebElement row = driver.findElement(By.xpath("//tr[td[contains(text(), '" + dueDateTable + "')] and td[contains(text(), \"" + assignmentName + "\")]]"));
         assertNotNull(row);
         Thread.sleep(SLEEP_DURATION);
-        //blahblahh
+    }
+
+    @Test
+    public void systemTestEnroll () throws Exception {
+        String title = "Software Design";
+        String section = "6";
+
+        driver.findElement(By.cssSelector("a[href= '/schedule']")).click();
+        driver.findElement(By.xpath("//tr[td[contains(text(), 'Year:')]]/td/input")).sendKeys("2025");     //2025
+        driver.findElement(By.xpath("//tr[td[contains(text(), 'Semester:')]]/td/input")).sendKeys("Spring");       //Spring
+        driver.findElement(By.xpath("//button[contains(text(), 'Show Schedule')]")).click();
+        Thread.sleep(SLEEP_DURATION);
+
+        WebElement scheduleTable = driver.findElement(By.xpath("//table[@class='Center' and @border='1']"));
+        List<WebElement> rows = scheduleTable.findElements(By.tagName("tr"));
+        int beforeSize = rows.size();
+
+        WebElement we = driver.findElement(By.cssSelector("a[href= '/addCourse']"));
+        we.click();
+        Thread.sleep(SLEEP_DURATION);
+        WebElement courseRow = driver.findElement(By.xpath("//tr[td[contains(text(), '" + title + "')] and td[contains(text(), '" + section + "')]]"));
+        WebElement enrollButton = courseRow.findElement(By.xpath(".//button[contains(text(), 'Enroll')]"));
+        enrollButton.click();
+        Thread.sleep(SLEEP_DURATION);
+
+        WebElement enrollButton2 = driver.findElement(By.cssSelector("div.MuiDialogActions-root button:nth-of-type(1)"));
+        enrollButton2.click();
+        Thread.sleep(SLEEP_DURATION);
+        WebElement courseRow2 = driver.findElement(By.xpath("//tr[td[contains(text(), '" + title + "')] and td[contains(text(), '" + section + "')]]"));
+        WebElement dropButton = courseRow2.findElement(By.xpath(".//button[contains(text(), 'Drop')]"));
+        assertNotNull(dropButton);
+        Thread.sleep(SLEEP_DURATION);
+
+        driver.findElement(By.cssSelector("a[href= '/schedule']")).click();
+        driver.findElement(By.xpath("//tr[td[contains(text(), 'Year:')]]/td/input")).sendKeys("2025");     //2025
+        driver.findElement(By.xpath("//tr[td[contains(text(), 'Semester:')]]/td/input")).sendKeys("Spring");       //Spring
+        driver.findElement(By.xpath("//button[contains(text(), 'Show Schedule')]")).click();
+        Thread.sleep(SLEEP_DURATION);
+
+        scheduleTable = driver.findElement(By.xpath("//table[@class='Center' and @border='1']"));
+        rows = scheduleTable.findElements(By.tagName("tr"));
+        int afterSize = rows.size();
+        assertEquals(beforeSize + 1, afterSize);
     }
 
     @Test
     public void systemTestGradeAssignment() throws Exception {
-        Keys myKey;
-        String osName = System.getProperty("os.name").toLowerCase();
-        if (osName.contains("windows") || osName.contains("linux")) {
-            myKey = Keys.CONTROL;
-        }else{
-            myKey = Keys.COMMAND;
-        }
+
         driver.findElement(By.id("year")).sendKeys("2025");     //2025
         driver.findElement(By.id("semester")).sendKeys("Spring");       //Spring
         driver.findElement(By.cssSelector("a[href='/sections']")).click();
@@ -357,13 +406,7 @@ public class SectionControllerSystemTest {
 
     @Test
     public void systemTestEnrollmentGrades() throws Exception {
-        Keys myKey;
-        String osName = System.getProperty("os.name").toLowerCase();
-        if (osName.contains("windows") || osName.contains("linux")) {
-            myKey = Keys.CONTROL;
-        }else{
-            myKey = Keys.COMMAND;
-        }
+
         driver.findElement(By.id("year")).sendKeys("2025");     //2025
         driver.findElement(By.id("semester")).sendKeys("Spring");       //Spring
         driver.findElement(By.cssSelector("a[href='/sections']")).click();
@@ -371,16 +414,52 @@ public class SectionControllerSystemTest {
 
         WebElement sectionsTable = driver.findElement(By.tagName("table"));
         List<WebElement> rows = sectionsTable.findElements(By.tagName("tr"));
-
+        // update the grades
         for (int i = 1; i < rows.size(); i++) {
-
+            // get the current row
             WebElement row = rows.get(i);
 
             row.findElement(By.xpath(".//a[contains(text(), 'ENROLLMENTS')]")).click();
             Thread.sleep(SLEEP_DURATION);
+
+            // getting a new table and giving everyone an A
+            WebElement enrollmentsTable = driver.findElement(By.xpath("//table[thead/tr/th[contains(text(), 'Enrollment ID')] and thead/tr/th[contains(text(), 'Student ID')]]"));
+            List<WebElement> enrollments = enrollmentsTable.findElements(By.tagName("tr"));
+            for (int j = 1; j < enrollments.size(); j++) {
+                WebElement enrollment = enrollments.get(j);
+                enrollment.findElement(By.name("grade")).sendKeys(Keys.chord(myKey,"a", Keys.DELETE));
+                enrollment.findElement(By.name("grade")).sendKeys("A");
+            }
+            driver.findElement(By.xpath("//button[contains(text(), 'Update')]")).click();
+            Thread.sleep(SLEEP_DURATION);
+            Alert alert = driver.switchTo().alert();
+            alert.accept();
             driver.navigate().back();
             Thread.sleep(SLEEP_DURATION);
             rows = driver.findElement(By.tagName("table")).findElements(By.tagName("tr"));
         }
+
+        // refreshing the page to check persistence
+        driver.navigate().refresh();
+        // checking that the grades are all set to A's
+        sectionsTable = driver.findElement(By.tagName("table"));
+        rows = sectionsTable.findElements(By.tagName("tr"));
+        // checking every sections grade
+        for (int i = 1; i < rows.size(); i++) {
+            WebElement row = rows.get(i);
+
+            row.findElement(By.xpath(".//a[contains(text(), 'ENROLLMENTS')]")).click();
+            Thread.sleep(SLEEP_DURATION);
+            WebElement enrollmentsTable = driver.findElement(By.xpath("//table[thead/tr/th[contains(text(), 'Enrollment ID')] and thead/tr/th[contains(text(), 'Student ID')]]"));
+            List<WebElement> enrollments = enrollmentsTable.findElements(By.tagName("tr"));
+            for (int j = 1; j < enrollments.size(); j++) {
+                WebElement enrollment = enrollments.get(j);
+                assertEquals("A", enrollment.findElement(By.name("grade")).getAttribute("value"));
+            }
+            driver.navigate().back();
+            Thread.sleep(SLEEP_DURATION);
+            rows = driver.findElement(By.tagName("table")).findElements(By.tagName("tr"));
+        }
+
     }
 }
