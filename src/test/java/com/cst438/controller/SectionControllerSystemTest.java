@@ -292,4 +292,67 @@ public class SectionControllerSystemTest {
         Thread.sleep(SLEEP_DURATION);
         //blahblahh
     }
+
+    @Test
+    public void systemTestGradeAssignment() throws Exception {
+        Keys myKey;
+        String osName = System.getProperty("os.name").toLowerCase();
+        if (osName.contains("windows") || osName.contains("linux")) {
+            myKey = Keys.CONTROL;
+        }else{
+            myKey = Keys.COMMAND;
+        }
+        driver.findElement(By.id("year")).sendKeys("2025");     //2025
+        driver.findElement(By.id("semester")).sendKeys("Spring");       //Spring
+        driver.findElement(By.cssSelector("a[href='/sections']")).click();
+        Thread.sleep(SLEEP_DURATION);
+        driver.findElement(By.cssSelector(("a[href='/assignments']"))).click();
+        Thread.sleep(SLEEP_DURATION);
+        // assignment of interest
+        WebElement we = driver.findElement(By.xpath("//tr[td[contains(text(), \"db homework 1\")]]"));
+        assertNotNull(we);
+        we.findElement(By.xpath("//button[contains(text(), 'Grade')]")).click();
+        Thread.sleep(SLEEP_DURATION);
+        Thread.sleep(SLEEP_DURATION);
+
+        // get the table to see how many students there are
+        WebElement table = driver.findElement(By.xpath("//table[tr/th[contains(text(), 'GradeId')] and tr/th[contains(text(), 'Student')]]"));
+        List<WebElement> rows = table.findElements(By.tagName("tr"));
+        if (rows.size() == 2){
+            assertEquals("95", driver.findElement(By.name("Score")).getAttribute("value"));
+            Thread.sleep(SLEEP_DURATION);
+
+            driver.findElement(By.name("Score")).sendKeys(Keys.chord(myKey,"a", Keys.DELETE));
+            // regrade
+            driver.findElement(By.name("Score")).sendKeys("100");
+            Thread.sleep(SLEEP_DURATION);
+            // reopen and confirm regrade success
+            driver.findElement(By.xpath("//button[contains(text(), 'Save Grades')]")).click();
+            Thread.sleep(SLEEP_DURATION);
+            we.findElement(By.xpath("//button[contains(text(), 'Grade')]")).click();
+            Thread.sleep(SLEEP_DURATION);
+            assertEquals("100", driver.findElement(By.name("Score")).getAttribute("value"));
+        }else if (rows.size() >= 3){
+            for (int i = 1; i < rows.size(); i++) {
+                WebElement scoreInputs = rows.get(i).findElement(By.name("Score"));
+                if (scoreInputs != null) {
+                    rows.get(i).findElement(By.name("Score")).sendKeys(Keys.chord(myKey,"a", Keys.DELETE));
+                    rows.get(i).findElement(By.name("Score")).sendKeys("100");
+                    Thread.sleep(SLEEP_DURATION);
+                }
+
+            }
+            driver.findElement(By.xpath("//button[contains(text(), 'Save Grades')]")).click();
+            Thread.sleep(SLEEP_DURATION);
+            we.findElement(By.xpath("//button[contains(text(), 'Grade')]")).click();
+            Thread.sleep(SLEEP_DURATION);
+            table = driver.findElement(By.xpath("//table[tr/th[contains(text(), 'GradeId')] and tr/th[contains(text(), 'Student')]]"));
+            rows = table.findElements(By.tagName("tr"));
+            for (int i = 1; i < rows.size(); i++) {
+                String scoreInputs = rows.get(i).findElement(By.name("Score")).getAttribute("value");
+                assertEquals("100", scoreInputs);
+            }
+        }
+
+    }
 }
