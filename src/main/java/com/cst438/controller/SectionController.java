@@ -156,10 +156,10 @@ public class SectionController {
     @GetMapping("/sections")
     public List<SectionDTO> getSectionsForInstructor(
             @RequestParam("email") String instructorEmail,
-            @RequestParam("year") int year ,
+            @RequestParam("year") String yearString,
             @RequestParam("semester") String semester )  {
 
-
+        int year = Integer.parseInt(yearString);
         List<Section> sections = sectionRepository.findByInstructorEmailAndYearAndSemester(instructorEmail, year, semester);
 
         List<SectionDTO> dto_list = new ArrayList<>();
@@ -185,6 +185,10 @@ public class SectionController {
         return dto_list;
     }
 
+    @GetMapping("/user")
+    public User getUserByEmail(@RequestParam("email") String email) {
+        return userRepository.findByEmail(email);
+    }
     // return sections that are related to the term where today's date is between
     // the add_date and the add_deadline of the term
     @GetMapping("/sections/open")
@@ -200,7 +204,7 @@ public class SectionController {
                     s.getTerm().getYear(),
                     s.getTerm().getSemester(),
                     s.getCourse().getCourseId(),
-		    s.getCourse().getTitle(),
+		            s.getCourse().getTitle(),
                     s.getSecId(),
                     s.getBuilding(),
                     s.getRoom(),

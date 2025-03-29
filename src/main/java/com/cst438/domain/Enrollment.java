@@ -10,7 +10,8 @@ public class Enrollment {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name="enrollment_id")
     int enrollmentId;
-	
+    @OneToMany(mappedBy = "enrollment", cascade = CascadeType.REMOVE)
+    List<Grade> grades;
 	// TODO complete this class
     // add additional attribute for grade
     String grade;
@@ -22,6 +23,7 @@ public class Enrollment {
     @ManyToOne
     @JoinColumn(name = "section_no")
     private Section section;
+
     // add getter/setter methods
     public int getEnrollmentId() {
         return enrollmentId;

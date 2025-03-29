@@ -1,6 +1,8 @@
 package com.cst438.domain;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 public class Grade {
@@ -19,7 +21,7 @@ public class Grade {
     private Assignment assignment;
     // add relationship between grade and enrollment entities
     @ManyToOne
-    @JoinColumn(name = "enrollment_id", nullable = false)
+    @JoinColumn(name = "enrollment_id")
     private Enrollment enrollment;
     // add getter/setter methods
 
