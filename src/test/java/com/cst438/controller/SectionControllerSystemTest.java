@@ -279,6 +279,10 @@ public class SectionControllerSystemTest {
         driver.findElement(By.cssSelector("a[href='/assignments']")).click();
         Thread.sleep(SLEEP_DURATION);
 
+        WebElement table = driver.findElement(By.tagName("table"));
+        List<WebElement> rows = table.findElements(By.tagName("tr"));
+        int beforeSize = rows.size();
+
         driver.findElement(By.xpath("//button[contains(text(), ' Add Assignment + ')]")).click();
         Thread.sleep(SLEEP_DURATION);
 
@@ -288,9 +292,56 @@ public class SectionControllerSystemTest {
         driver.findElement(By.xpath("//button[contains(text(), 'Save')]")).click();
         Thread.sleep(SLEEP_DURATION);
 
-        WebElement row = driver.findElement(By.xpath("//tr[td[contains(text(), '" + dueDateTable + "')] and td[contains(text(), '" + assignmentName + "')]]"));
+        table = driver.findElement(By.tagName("table"));
+        rows = table.findElements(By.tagName("tr"));
+        int afterSize = rows.size();
+        assertEquals(beforeSize + 1, afterSize);
+
+        WebElement row = driver.findElement(By.xpath("//tr[td[contains(text(), '" + dueDateTable + "')] and td[contains(text(), \"" + assignmentName + "\")]]"));
         assertNotNull(row);
         Thread.sleep(SLEEP_DURATION);
-        //blahblahh
+    }
+
+    @Test
+    public void systemTestEnroll () throws Exception {
+        String title = "Software Design";
+        String section = "6";
+
+        driver.findElement(By.cssSelector("a[href= '/schedule']")).click();
+        driver.findElement(By.xpath("//tr[td[contains(text(), 'Year:')]]/td/input")).sendKeys("2025");     //2025
+        driver.findElement(By.xpath("//tr[td[contains(text(), 'Semester:')]]/td/input")).sendKeys("Spring");       //Spring
+        driver.findElement(By.xpath("//button[contains(text(), 'Show Schedule')]")).click();
+        Thread.sleep(SLEEP_DURATION);
+
+        WebElement scheduleTable = driver.findElement(By.xpath("//table[@class='Center' and @border='1']"));
+        List<WebElement> rows = scheduleTable.findElements(By.tagName("tr"));
+        int beforeSize = rows.size();
+
+        WebElement we = driver.findElement(By.cssSelector("a[href= '/addCourse']"));
+        we.click();
+        Thread.sleep(SLEEP_DURATION);
+        WebElement courseRow = driver.findElement(By.xpath("//tr[td[contains(text(), '" + title + "')] and td[contains(text(), '" + section + "')]]"));
+        WebElement enrollButton = courseRow.findElement(By.xpath(".//button[contains(text(), 'Enroll')]"));
+        enrollButton.click();
+        Thread.sleep(SLEEP_DURATION);
+
+        WebElement enrollButton2 = driver.findElement(By.cssSelector("div.MuiDialogActions-root button:nth-of-type(1)"));
+        enrollButton2.click();
+        Thread.sleep(SLEEP_DURATION);
+        WebElement courseRow2 = driver.findElement(By.xpath("//tr[td[contains(text(), '" + title + "')] and td[contains(text(), '" + section + "')]]"));
+        WebElement dropButton = courseRow2.findElement(By.xpath(".//button[contains(text(), 'Drop')]"));
+        assertNotNull(dropButton);
+        Thread.sleep(SLEEP_DURATION);
+
+        driver.findElement(By.cssSelector("a[href= '/schedule']")).click();
+        driver.findElement(By.xpath("//tr[td[contains(text(), 'Year:')]]/td/input")).sendKeys("2025");     //2025
+        driver.findElement(By.xpath("//tr[td[contains(text(), 'Semester:')]]/td/input")).sendKeys("Spring");       //Spring
+        driver.findElement(By.xpath("//button[contains(text(), 'Show Schedule')]")).click();
+        Thread.sleep(SLEEP_DURATION);
+
+        scheduleTable = driver.findElement(By.xpath("//table[@class='Center' and @border='1']"));
+        rows = scheduleTable.findElements(By.tagName("tr"));
+        int afterSize = rows.size();
+        assertEquals(beforeSize + 1, afterSize);
     }
 }
