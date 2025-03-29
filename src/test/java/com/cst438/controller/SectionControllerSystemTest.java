@@ -353,6 +353,34 @@ public class SectionControllerSystemTest {
                 assertEquals("100", scoreInputs);
             }
         }
+    }
 
+    @Test
+    public void systemTestEnrollmentGrades() throws Exception {
+        Keys myKey;
+        String osName = System.getProperty("os.name").toLowerCase();
+        if (osName.contains("windows") || osName.contains("linux")) {
+            myKey = Keys.CONTROL;
+        }else{
+            myKey = Keys.COMMAND;
+        }
+        driver.findElement(By.id("year")).sendKeys("2025");     //2025
+        driver.findElement(By.id("semester")).sendKeys("Spring");       //Spring
+        driver.findElement(By.cssSelector("a[href='/sections']")).click();
+        Thread.sleep(SLEEP_DURATION);
+
+        WebElement sectionsTable = driver.findElement(By.tagName("table"));
+        List<WebElement> rows = sectionsTable.findElements(By.tagName("tr"));
+
+        for (int i = 1; i < rows.size(); i++) {
+
+            WebElement row = rows.get(i);
+
+            row.findElement(By.xpath(".//a[contains(text(), 'ENROLLMENTS')]")).click();
+            Thread.sleep(SLEEP_DURATION);
+            driver.navigate().back();
+            Thread.sleep(SLEEP_DURATION);
+            rows = driver.findElement(By.tagName("table")).findElements(By.tagName("tr"));
+        }
     }
 }
