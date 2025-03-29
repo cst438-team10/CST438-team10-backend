@@ -17,7 +17,7 @@ public class Grade {
     Integer score;
     // add relationship between grade and assignment entities
     @ManyToOne
-    @JoinColumn(name = "assignment_id")
+    @JoinColumn(name = "assignment_id", nullable = false)
     private Assignment assignment;
     // add relationship between grade and enrollment entities
     @ManyToOne
