@@ -43,7 +43,7 @@ public class EnrollmentControllerUnitTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                         .andReturn()
-                        .getResponse();;
+                .getResponse();;
         assertEquals(200, response.getStatus());
         EnrollmentDTO result = fromJsonString(response.getContentAsString(), EnrollmentDTO.class);
         assertNotEquals(0, result.sectionNo());
@@ -54,7 +54,7 @@ public class EnrollmentControllerUnitTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                         .andReturn()
-                        .getResponse();
+                .getResponse();
         assertEquals(200, response.getStatus());
     }
 }
