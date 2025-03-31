@@ -3,11 +3,13 @@ package com.cst438.controller;
 import com.cst438.domain.*;
 import com.cst438.dto.AssignmentDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 
 import java.sql.Date;
@@ -56,6 +58,11 @@ public class AssignmentController {
         Assignment assignment = new Assignment();
         Section section = new Section();
         Course course = new Course();
+
+        List<Assignment> sections = assignmentRepository.findBySectionNoOrderByDueDate(dto.secNo());
+        if (sections.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid Section Number");
+        }
 
         course.setCourseId(dto.courseId());
 
