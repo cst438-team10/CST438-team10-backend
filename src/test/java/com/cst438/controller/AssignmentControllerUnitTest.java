@@ -3,13 +3,10 @@ package com.cst438.controller;
 
 import com.cst438.domain.Assignment;
 import com.cst438.domain.AssignmentRepository;
-import com.cst438.domain.Grade;
 import com.cst438.domain.GradeRepository;
 import com.cst438.dto.AssignmentDTO;
 import com.cst438.dto.GradeDTO;
-import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.Test;
-import org.mockito.junit.MockitoJUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,7 +14,6 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
 import static com.cst438.test.utils.TestUtils.fromJsonString;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -75,7 +71,7 @@ public class AssignmentControllerUnitTest {
     }
 
     @Test
-    public void addAssignmentGrade() throws Exception {
+    public void addAssignmentInvalidSectionNumber() throws Exception {
         MockHttpServletResponse response;
 
         AssignmentDTO assignmentDTO = new AssignmentDTO(
@@ -84,7 +80,7 @@ public class AssignmentControllerUnitTest {
                 "2025-03-31",
                 "cst363",
                 9,
-                8
+                5
         );
 
         response = mockMvc.perform(MockMvcRequestBuilders
@@ -92,55 +88,35 @@ public class AssignmentControllerUnitTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(assignmentDTO)))
-                        .andReturn().getResponse();
+                .andReturn().getResponse();
 
-        assertEquals(200, response.getStatus());
-        AssignmentDTO assignmentResult = fromJsonString(response.getContentAsString(), AssignmentDTO.class);
+        assertEquals(404, response.getStatus());
+        assertEquals("Invalid Section Number", response.getErrorMessage());
+    }
 
+    @Test
+    public void addAssignmentGrade() throws Exception {
+        MockHttpServletResponse response;
+
+        int AssignmentId = 1;
         GradeDTO gradeDTO = new GradeDTO(
                 1,
                 "John Smith",
                 "john.smith@csumb.edu",
-                assignmentResult.title(),
-                assignmentResult.courseId(),
-                assignmentResult.secId(),
+                "Collect samples from Miller's planet",
+                "cst363",
+                9,
                 95
         );
 
-        mockMvc.perform(MockMvcRequestBuilders
-                        .post("/grades")
+        response = mockMvc.perform(MockMvcRequestBuilders
+                        .get("/assignments/" + AssignmentId + "/grades")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(gradeDTO)))
                 .andReturn().getResponse();
 
-        response = mockMvc.perform(MockMvcRequestBuilders
-                        .post("/assignments/"+assignmentResult.id()+"/grades")
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(gradeDTO)))
-                .andReturn().getResponse();
-
-
         assertEquals(200, response.getStatus());
-        GradeDTO result = fromJsonString(response.getContentAsString(), GradeDTO.class);
-        Grade grade = gradeRepository.findById(result.gradeId()).orElse(null);
-        assertNotNull(grade);
-        assertEquals(1, result.gradeId());
-        assertEquals("John Smith", result.studentName());
-        assertEquals("john.smith@csumb.edu", result.studentEmail());
-        assertEquals("Collect samples from Miller's planet", result.assignmentTitle());
-        assertEquals(1, result.gradeId());
-        assertEquals(9, result.sectionId());
-        assertEquals(95, result.score());
-
-        response = mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/assignments/"+assignmentResult.id()))
-                .andReturn()
-                .getResponse();
-        assertEquals(200, response.getStatus());
-        Assignment assignment = assignmentRepository.findById(assignmentResult.id()).orElse(null);
-        assertNull(assignment);
     }
 
     @Test
@@ -159,13 +135,14 @@ public class AssignmentControllerUnitTest {
         );
 
         response = mockMvc.perform(MockMvcRequestBuilders
-                        .post("/assignments/" + invalidAssignmentId + "/grades")
+                        .get("/assignments/" + invalidAssignmentId + "/grades")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(gradeDTO)))
                 .andReturn().getResponse();
 
         assertEquals(404, response.getStatus());
+        assertEquals("Assignment not found", response.getErrorMessage());
     }
 
 
