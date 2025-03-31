@@ -42,8 +42,8 @@ public class EnrollmentControllerUnitTest {
                         .post("/enrollments/sections/{sectionNo}?studentId=3", "9")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andReturn()
-                .getResponse();;
+                        .andReturn()
+                        .getResponse();;
         assertEquals(200, response.getStatus());
         EnrollmentDTO result = fromJsonString(response.getContentAsString(), EnrollmentDTO.class);
         assertNotEquals(0, result.sectionNo());
@@ -53,8 +53,8 @@ public class EnrollmentControllerUnitTest {
                         .delete("/enrollments/{enrollmentNo}", enrollmentId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andReturn()
-                .getResponse();
+                        .andReturn()
+                        .getResponse();
         assertEquals(200, response.getStatus());
     }
 }
