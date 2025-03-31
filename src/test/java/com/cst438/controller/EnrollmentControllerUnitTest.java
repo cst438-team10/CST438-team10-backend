@@ -35,6 +35,7 @@ public class EnrollmentControllerUnitTest {
         assertEquals(400, response.getStatus());
         assertEquals("enrollment closed", response.getErrorMessage());
     }
+
     @Test
     public void enrollIntoSectionTest() throws Exception {
         MockHttpServletResponse response = mockMvc.perform(MockMvcRequestBuilders
