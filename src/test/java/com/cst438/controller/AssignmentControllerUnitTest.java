@@ -98,22 +98,26 @@ public class AssignmentControllerUnitTest {
     public void addAssignmentGrade() throws Exception {
         MockHttpServletResponse response;
 
-        int AssignmentId = 1;
-        GradeDTO gradeDTO = new GradeDTO(
-                1,
-                "John Smith",
-                "john.smith@csumb.edu",
-                "Collect samples from Miller's planet",
-                "cst363",
-                9,
-                95
-        );
+        int assignmentId = 1;
+
+        // Step 1: Get grades for the assignment
+        response = mockMvc.perform(MockMvcRequestBuilders
+                        .get("/assignments/" + assignmentId + "/grades")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+
+        assertEquals(200, response.getStatus());
+
+        String jsonResponse = response.getContentAsString();
+        assertFalse(jsonResponse.isEmpty(), "Grade Not Found");
+
+        String updatedJson = jsonResponse.replace("\"score\":85", "\"score\":95");
 
         response = mockMvc.perform(MockMvcRequestBuilders
-                        .get("/assignments/" + AssignmentId + "/grades")
+                        .put("/grades")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(gradeDTO)))
+                        .content(updatedJson)) // Send modified JSON
                 .andReturn().getResponse();
 
         assertEquals(200, response.getStatus());
