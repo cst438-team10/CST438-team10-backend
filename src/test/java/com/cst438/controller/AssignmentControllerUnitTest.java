@@ -99,8 +99,6 @@ public class AssignmentControllerUnitTest {
         MockHttpServletResponse response;
 
         int assignmentId = 1;
-
-        // Step 1: Get grades for the assignment
         response = mockMvc.perform(MockMvcRequestBuilders
                         .get("/assignments/" + assignmentId + "/grades")
                         .accept(MediaType.APPLICATION_JSON))
