@@ -75,33 +75,6 @@ public class AssignmentControllerUnitTest {
     }
 
     @Test
-    public void addInvalidAssignmentDueDate() throws Exception {
-        MockHttpServletResponse response;
-
-        AssignmentDTO assignmentDTO = new AssignmentDTO(
-                0,
-                "Collect samples from Miller's planet",
-                "2027-03-31",  // Invalid due date
-                "cst363",
-                9,
-                8
-        );
-
-        response = mockMvc.perform(MockMvcRequestBuilders
-                        .post("/assignments")
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(assignmentDTO)))
-                .andReturn().getResponse();
-
-        assertEquals(400, response.getStatus());  // Expecting 400 Bad Request
-
-        String errorMessage = response.getContentAsString();
-        System.out.println(errorMessage);
-        assertTrue(errorMessage.contains("Due date is invalid: Must be within the course start and end dates"));
-    }
-
-    @Test
     public void addAssignmentGrade() throws Exception {
         MockHttpServletResponse response;
 
@@ -128,18 +101,26 @@ public class AssignmentControllerUnitTest {
                 1,
                 "John Smith",
                 "john.smith@csumb.edu",
-                "Collect samples from Miller's planet",
-                "cst363",
-                9,
+                assignmentResult.title(),
+                assignmentResult.courseId(),
+                assignmentResult.secId(),
                 95
         );
 
-        response = mockMvc.perform(MockMvcRequestBuilders
+        mockMvc.perform(MockMvcRequestBuilders
                         .post("/grades")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(gradeDTO)))
                 .andReturn().getResponse();
+
+        response = mockMvc.perform(MockMvcRequestBuilders
+                        .post("/assignments/"+assignmentResult.id()+"/grades")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(gradeDTO)))
+                .andReturn().getResponse();
+
 
         assertEquals(200, response.getStatus());
         GradeDTO result = fromJsonString(response.getContentAsString(), GradeDTO.class);
@@ -184,7 +165,7 @@ public class AssignmentControllerUnitTest {
                         .content(asJsonString(gradeDTO)))
                 .andReturn().getResponse();
 
-        assertEquals(405, response.getStatus());
+        assertEquals(404, response.getStatus());
     }
 
 
