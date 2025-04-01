@@ -67,7 +67,32 @@ public class AssignmentControllerUnitTest {
         assertEquals(200, response.getStatus());
         assignment = assignmentRepository.findById(result.id()).orElse(null);
         assertNull(assignment);
+    }
 
+    @Test
+    public void addAssignmentInvalidDueDate() throws Exception {
+        MockHttpServletResponse response;
+
+        AssignmentDTO assignmentDTO = new AssignmentDTO(
+                0,
+                "Invalid due date assignment",
+                "2025-06-01",
+                "cst363",
+                9,
+                8
+        );
+
+        response = mockMvc.perform(MockMvcRequestBuilders
+                .post("/assignments")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(assignmentDTO)))
+                .andReturn().getResponse();
+
+        assertEquals(400, response.getStatus());
+        String errorMessage = response.getErrorMessage();
+        assertNotNull(errorMessage);
+        assertTrue(errorMessage.contains("invalid due date"));
     }
 
     @Test
