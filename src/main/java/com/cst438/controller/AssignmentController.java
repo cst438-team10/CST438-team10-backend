@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +56,7 @@ public class AssignmentController {
     @PostMapping("/assignments")
     public AssignmentDTO createAssignment(
             @RequestBody AssignmentDTO dto) {
+
         // Get the existing section from the database
         Section section = sectionRepository.findById(dto.secNo())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "section not found"));
