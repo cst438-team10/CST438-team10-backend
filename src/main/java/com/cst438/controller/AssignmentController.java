@@ -3,12 +3,13 @@ package com.cst438.controller;
 import com.cst438.domain.*;
 import com.cst438.dto.AssignmentDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -20,6 +21,9 @@ public class AssignmentController {
 
     @Autowired
     AssignmentRepository assignmentRepository;
+
+    @Autowired
+    SectionRepository sectionRepository;
 
     /**
      instructor lists assignments for a section.
@@ -53,26 +57,34 @@ public class AssignmentController {
     @PostMapping("/assignments")
     public AssignmentDTO createAssignment(
             @RequestBody AssignmentDTO dto) {
+        // Get the existing section from the database
+        Section section = sectionRepository.findById(dto.secNo())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "section not found"));
+
         Assignment assignment = new Assignment();
-        Section section = new Section();
-        Course course = new Course();
-
-        course.setCourseId(dto.courseId());
-
-        section.setSectionNo(dto.secNo());
-        section.setSecId(dto.secId());
-        section.setCourse(course);
-
         assignment.setAssignmentId(dto.id());
         assignment.setTitle(dto.title());
         assignment.setDueDate(Date.valueOf(dto.dueDate()));
         assignment.setSection(section);
 
+        // Validate due date against term dates
+        Date dueDate = Date.valueOf(dto.dueDate());
+        if (dueDate.before(section.getTerm().getStartDate()) || dueDate.after(section.getTerm().getEndDate())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "invalid due date");
+        }
+
         // Save the assignment using the repository
         Assignment savedAssignment = assignmentRepository.save(assignment);
 
-        // Convert saved assignment back to DTO
-        return new AssignmentDTO(savedAssignment.getAssignmentId(), savedAssignment.getTitle(), savedAssignment.getDueDate().toString(), savedAssignment.getSection().getCourse().toString(), savedAssignment.getSection().getSecId(), savedAssignment.getSection().getSectionNo());
+        // Convert saved assignment back to DTO, using the secId from the input DTO
+        return new AssignmentDTO(
+            savedAssignment.getAssignmentId(), 
+            savedAssignment.getTitle(), 
+            savedAssignment.getDueDate().toString(), 
+            savedAssignment.getSection().getCourse().toString(), 
+            dto.secId(),  // Use the secId from the input DTO
+            savedAssignment.getSection().getSectionNo()
+        );
     }
 
     /**

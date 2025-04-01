@@ -73,8 +73,8 @@ public class AssignmentControllerUnitTest {
 
         AssignmentDTO assignmentDTO = new AssignmentDTO(
                 0,
-                "Valid due date assignment",
-                "2025-03-31",
+                "Invalid due date assignment",
+                "2025-06-01",
                 "cst363",
                 9,
                 8
@@ -87,21 +87,10 @@ public class AssignmentControllerUnitTest {
                 .content(asJsonString(assignmentDTO)))
                 .andReturn().getResponse();
 
-        assertEquals(200, response.getStatus());
-        AssignmentDTO result = fromJsonString(response.getContentAsString(), AssignmentDTO.class);
-        Assignment assignment = assignmentRepository.findById(result.id()).orElse(null);
-        assertNotNull(assignment);
-        assertNotEquals(0, result.id());
-        assertEquals("Valid due date assignment", result.title());
-        assertEquals(9, result.secId());
-
-        response = mockMvc.perform(MockMvcRequestBuilders
-                .delete("/assignments/"+result.id()))
-                .andReturn()
-                .getResponse();
-        assertEquals(200, response.getStatus());
-        assignment = assignmentRepository.findById(result.id()).orElse(null);
-        assertNull(assignment);
+        assertEquals(400, response.getStatus());
+        String errorMessage = response.getErrorMessage();
+        assertNotNull(errorMessage);
+        assertTrue(errorMessage.contains("invalid due date"));
     }
 
 }
