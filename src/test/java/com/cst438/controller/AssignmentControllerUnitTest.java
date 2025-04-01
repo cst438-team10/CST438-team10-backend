@@ -105,7 +105,7 @@ public class AssignmentControllerUnitTest {
                 "2025-03-31",
                 "cst363",
                 9,
-                5
+                555
         );
 
         response = mockMvc.perform(MockMvcRequestBuilders
@@ -116,7 +116,7 @@ public class AssignmentControllerUnitTest {
                 .andReturn().getResponse();
 
         assertEquals(404, response.getStatus());
-        assertEquals("Invalid Section Number", response.getErrorMessage());
+        assertEquals("section not found", response.getErrorMessage());
     }
 
     @Test
