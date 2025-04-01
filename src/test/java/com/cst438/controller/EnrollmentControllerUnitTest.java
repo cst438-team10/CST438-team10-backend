@@ -16,6 +16,7 @@ import static com.cst438.test.utils.TestUtils.fromJsonString;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.sql.Date;
+import java.util.List;
 
 @AutoConfigureMockMvc
 @SpringBootTest
@@ -27,6 +28,10 @@ public class EnrollmentControllerUnitTest {
     @Autowired
     EnrollmentRepository enrollmentRepository;
 
+    /**
+     * Test ensuring enrolling past ADDDEADLINE is not allowed
+     * @throws Exception
+     */
     @Test
     public void EnrollPastAddDeadlineTest() throws Exception {
         MockHttpServletResponse response;
@@ -36,6 +41,10 @@ public class EnrollmentControllerUnitTest {
         assertEquals("enrollment closed", response.getErrorMessage());
     }
 
+    /**
+     * Test ensuring successful enrollment into a section
+     * @throws Exception
+     */
     @Test
     public void enrollIntoSectionTest() throws Exception {
         MockHttpServletResponse response = mockMvc.perform(MockMvcRequestBuilders
@@ -56,5 +65,14 @@ public class EnrollmentControllerUnitTest {
                         .andReturn()
                 .getResponse();
         assertEquals(200, response.getStatus());
+    }
+
+    /**
+     * Test updating enrollment grade
+     */
+    @Test
+    public void updateEnrollmentGradeTest() throws Exception {
+        MockHttpServletResponse response;
+
     }
 }
