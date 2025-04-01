@@ -15,6 +15,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+/**
+ * System tests pertaining to STUDENT role
+ */
 public class StudentSystemTests {
     static String osName = System.getProperty("os.name").toLowerCase();
     Keys myKey = osName.contains("windows") || osName.contains("linux")?Keys.CONTROL:Keys.COMMAND;
@@ -58,6 +61,18 @@ public class StudentSystemTests {
             driver = null;
         }
     }
+
+    /**
+     * System test to enroll into a section
+     * --- The test uses Selenium to navigate from the home page for
+     * --- an student to the page to enroll into a section.
+     * --- A section is selected from the list of open sections.
+     * --- The student view schedule page is selected, and the year
+     * --- and semester are entered. There are assert statements that
+     * --- verify the new section was successfully added to the
+     * --- student's schedule.
+     * @throws Exception
+     */
     @Test
     public void systemTestEnroll () throws Exception {
         String title = "Software Design";

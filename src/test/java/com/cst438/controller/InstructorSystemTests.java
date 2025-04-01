@@ -12,6 +12,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+/**
+ * System tests pertaining to INSTRUCTOR role
+ */
+
 public class InstructorSystemTests {
 
     static String osName = System.getProperty("os.name").toLowerCase();
@@ -57,6 +61,18 @@ public class InstructorSystemTests {
         }
     }
 
+    /**
+     * System test to add an assignment
+     * --- The test uses Selenium to navigate
+     * --- from the home page for an instructor,
+     * --- to view a list of Sections, enter year and semester
+     * --- and view the list of sections, then select the link
+     * --- to view assignments, and finally to create a new assignment.
+     * --- The fields assignment title and due date are entered,
+     * --- and the assignment is successfully created. There are assert
+     * --- statements that verify the assignment was successfully created.
+     * @throws Exception
+     */
     @Test
     public void systemTestAddAssignment() throws Exception {
         String assignmentName = "Visit Edmund's Planet";
@@ -95,7 +111,16 @@ public class InstructorSystemTests {
         Thread.sleep(SLEEP_DURATION);
     }
 
-
+    /**
+     * System test to grade an assignment
+     * --- The test uses Selenium to navigate from the home page for an \
+     * --- instructor, to view a list of Sections, enter year and semester
+     * --- and view the list of sections, then select the link to
+     * --- grade an assignment. Scores are entered for all students and
+     * --- then saved. There are assert statements to check that the
+     * --- save was successful.
+     * @throws Exception
+     */
     @Test
     public void systemTestGradeAssignment() throws Exception {
 
@@ -152,6 +177,16 @@ public class InstructorSystemTests {
         }
     }
 
+    /**
+     * System test to enter enrollment grades for enrolled students
+     * --- The test uses Selenium to navigate from the home page for an
+     * --- instructor, to view a list of Sections, enter year and semester
+     * --- and view the list of sections, then select the link to view enrollments,
+     * --- and the grade field for each enrolled student is updated with a final
+     * --- letter grade value. Then the grades are saved.
+     * --- There are assert statements to verify that the grades were saved.
+     * @throws Exception
+     */
     @Test
     public void systemTestEnrollmentGrades() throws Exception {
 
