@@ -224,6 +224,7 @@ public class InstructorSystemTests {
 
         // refreshing the page to check persistence
         driver.navigate().refresh();
+        Thread.sleep(SLEEP_DURATION);
         // checking that the grades are all set to A's
         sectionsTable = driver.findElement(By.tagName("table"));
         rows = sectionsTable.findElements(By.tagName("tr"));
