@@ -2,6 +2,7 @@ package com.cst438.controller;
 
 import com.cst438.domain.*;
 import com.cst438.dto.AssignmentDTO;
+import com.cst438.dto.AssignmentStudentDTO;
 import com.cst438.dto.SectionDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,12 @@ public class AssignmentController {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    EnrollmentRepository enrollmentRepository;
+
+    @Autowired
+    GradeRepository gradeRepository;
 
     /**
      instructor lists assignments for a section.
@@ -156,6 +163,42 @@ public class AssignmentController {
             ));
         }
         return dto_list;
+    }
+
+    @GetMapping("/assignments")
+    public List<AssignmentStudentDTO> getStudentAssignments(
+            @RequestParam("studentId") int studentId,
+            @RequestParam("year") int year,
+            @RequestParam("semester") String semester) {
+
+        // return a list of assignments and (if they exist) the assignment grade
+        //  for all sections that the student is enrolled for the given year and semester
+        //  hint: use the assignment repository method findByStudentIdAndYearAndSemesterOrderByDueDate
+        List<Assignment> assignments = assignmentRepository.findByStudentIdAndYearAndSemesterOrderByDueDate(studentId, year, semester);
+        List<Enrollment> enrollments = enrollmentRepository.findByYearAndSemesterOrderByCourseId(year, semester, studentId);
+
+        List<AssignmentStudentDTO> assignmentDTOs = new ArrayList<>();
+        for (Assignment assignment : assignments) {
+            for (Enrollment enrollment : enrollments) {
+                //List<Grade> grades = (List<Grade>) gradeRepository.findByEnrollmentIdAndAssignmentId(enrollment.getEnrollmentId(), assignment.getAssignmentId());
+                //for (Grade grade : grades) {
+                Grade grade = gradeRepository.findByEnrollmentIdAndAssignmentId(enrollment.getEnrollmentId(), assignment.getAssignmentId());
+                Integer score = (grade != null) ? grade.getScore() : null;
+                AssignmentStudentDTO dto = new AssignmentStudentDTO(
+                        assignment.getAssignmentId(),
+                        assignment.getTitle(),
+                        assignment.getDueDate(),
+                        enrollment.getSection().getCourse().getCourseId(),
+                        assignment.getSection().getSecId(),
+                        score
+                );
+                assignmentDTOs.add(dto);
+                //}
+
+            }
+
+        }
+        return assignmentDTOs;
     }
 
 }

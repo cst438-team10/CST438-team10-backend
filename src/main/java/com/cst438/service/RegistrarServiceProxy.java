@@ -165,8 +165,6 @@ public class RegistrarServiceProxy {
             System.out.println("Exception in receivedFromRegistrar: "+e.getMessage());
         }
     }
-
-
     private void sendMessage(String s) {
         rabbitTemplate.convertAndSend(registrarServiceQueue.getName(), s);
     }
