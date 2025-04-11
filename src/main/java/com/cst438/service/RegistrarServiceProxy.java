@@ -31,6 +31,8 @@ public class RegistrarServiceProxy {
     UserRepository userRepository;
     @Autowired
     EnrollmentRepository enrollmentRepository;
+
+
     @Bean
     public Queue createQueue() {
         return new Queue("gradebook_service", true);
@@ -39,9 +41,11 @@ public class RegistrarServiceProxy {
     @Autowired
     RabbitTemplate rabbitTemplate;
 
-    public void updateEnrollment(String enrollmentId){
+    public void updateEnrollment(int enrollmentId){
         sendMessage("updateEnrollment "+enrollmentId);
     }
+
+
     @RabbitListener(queues = "gradebook_service")
     public void receiveFromRegistrar(String message)  {
         /// receiving messages from registrar service
@@ -49,18 +53,7 @@ public class RegistrarServiceProxy {
             // debugging
             System.out.println("receiving messages from registrar "+ message);
             String[] parts = message.split(" ", 2);
-/**
- * ● Gradebook service -- create a new class in the service directory RegistrarServiceProxy with the
- * following code
- * o Receive messages for new or updated or deleted courses, sections, users, and
- * enrollments. Perform the necessary update to the local database.
- * o When an instructor updates an enrollment with a final course grade, send a message to
- * the registrar service.
- * o You will have to update the EnrollmentController class to call the proxy as well as
- * complete the code for the proxy class.
- * o Use try-catch when receiving a message to avoid an exception that would result in an
- * infinite loop (an exception will put
- */
+
             if (parts[0].equals("addCourse")){
                 CourseDTO dto = fromJsonString(parts[1], CourseDTO.class);
                 Course course = new Course();
