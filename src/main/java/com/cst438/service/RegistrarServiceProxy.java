@@ -160,8 +160,6 @@ public class RegistrarServiceProxy {
                 }
             } else if (parts[0].equals("deleteEnrollment")) {
                 enrollmentRepository.deleteById(Integer.parseInt(parts[1]));
-//            } else if (parts[0].equals("updateEnrollment")) {
-//
             }
         } catch(Exception e) {
             System.out.println("Exception in receivedFromRegistrar: "+e.getMessage());
