@@ -41,7 +41,7 @@ public class GradebookServiceProxy {
         //TODO implement this message
     }
 
-    
+
     /**
      * o whenever a course, section, user, enrollment entity is created, deleted or updated, a
      * message is sent to the queue for the gradebook service
