@@ -34,7 +34,7 @@ public class CourseController {
     @Autowired
     UserRepository userRepository;
 
-
+    
     // ADMIN function to create a new course
     @PostMapping("/courses")
     public CourseDTO addCourse(@RequestBody CourseDTO course) {
