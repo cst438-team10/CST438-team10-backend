@@ -1,5 +1,7 @@
 package com.cst438.Service;
 
+import com.cst438.dto.CourseDTO;
+import com.cst438.dto.SectionDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -18,6 +20,19 @@ public class GradebookServiceProxy {
         return new Queue("registrar_service", true);
     }
 
+    public void addCourse(CourseDTO course){
+        sendMessage("addCourse "+asJsonString(course));
+    }
+    public void updateCourse(CourseDTO course){
+        sendMessage("updateCourse "+asJsonString(course));
+    }
+    public void deleteCourse(String courseId){
+        sendMessage("deleteCourse "+courseId);
+    }
+
+    public void addSection(SectionDTO section){
+        sendMessage("addSection "+section);
+    }
     @Autowired
     RabbitTemplate rabbitTemplate;
 
