@@ -2,6 +2,7 @@ package com.cst438.controller;
 
 import com.cst438.domain.*;
 import com.cst438.dto.AssignmentDTO;
+import com.cst438.dto.SectionDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,9 @@ public class AssignmentController {
 
     @Autowired
     SectionRepository sectionRepository;
+
+    @Autowired
+    UserRepository userRepository;
 
     /**
      instructor lists assignments for a section.
@@ -122,4 +126,36 @@ public class AssignmentController {
 
         assignmentRepository.deleteById(assignmentId);
     }
+    @GetMapping("/sections")
+    public List<SectionDTO> getSectionsForInstructor(
+            @RequestParam("email") String instructorEmail,
+            @RequestParam("year") String yearString,
+            @RequestParam("semester") String semester )  {
+
+        int year = Integer.parseInt(yearString);
+        List<Section> sections = sectionRepository.findByInstructorEmailAndYearAndSemester(instructorEmail, year, semester);
+
+        List<SectionDTO> dto_list = new ArrayList<>();
+        for (Section s : sections) {
+            User instructor = null;
+            if (s.getInstructorEmail()!=null) {
+                instructor = userRepository.findByEmail(s.getInstructorEmail());
+            }
+            dto_list.add(new SectionDTO(
+                    s.getSectionNo(),
+                    s.getTerm().getYear(),
+                    s.getTerm().getSemester(),
+                    s.getCourse().getCourseId(),
+                    s.getCourse().getTitle(),
+                    s.getSecId(),
+                    s.getBuilding(),
+                    s.getRoom(),
+                    s.getTimes(),
+                    (instructor!=null) ? instructor.getName() : "",
+                    (instructor!=null) ? instructor.getEmail() : ""
+            ));
+        }
+        return dto_list;
+    }
+
 }

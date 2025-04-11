@@ -26,44 +26,6 @@ public class StudentController {
     GradeRepository gradeRepository;
 
     /**
-     students lists there enrollments given year and semester value
-     returns list of enrollments, may be empty
-     logged in user must be the student (assignment 7)
-     */
-   @GetMapping("/enrollments")
-   public List<EnrollmentDTO> getSchedule(
-           @RequestParam("year") int year,
-           @RequestParam("semester") String semester,
-           @RequestParam("studentId") int studentId) {
-       //  hint: use enrollment repository method findByYearAndSemesterOrderByCourseId
-
-       List<Enrollment> enrollments = enrollmentRepository.findByYearAndSemesterOrderByCourseId(year, semester, studentId);
-       List<EnrollmentDTO> enrollmentDTOs = new ArrayList<>();
-
-       for (Enrollment enrollment : enrollments) {
-           EnrollmentDTO dto = new EnrollmentDTO(
-                   enrollment.getEnrollmentId(),
-                   enrollment.getGrade(),
-                   enrollment.getUser().getId(),
-                   enrollment.getUser().getName(),
-                   enrollment.getUser().getEmail(),
-                   enrollment.getSection().getCourse().getCourseId(),
-                   enrollment.getSection().getCourse().getTitle(),
-                   enrollment.getSection().getSecId(),
-                   enrollment.getSection().getSectionNo(),
-                   enrollment.getSection().getBuilding(),
-                   enrollment.getSection().getRoom(),
-                   enrollment.getSection().getTimes(),
-                   enrollment.getSection().getCourse().getCredits(),
-                   enrollment.getSection().getTerm().getYear(),
-                   enrollment.getSection().getTerm().getSemester()
-           );
-           enrollmentDTOs.add(dto);
-       }
-       return enrollmentDTOs;
-   }
-
-    /**
      students lists there assignments given year and semester value
      returns list of assignments may be empty
      logged in user must be the student (assignment 7)

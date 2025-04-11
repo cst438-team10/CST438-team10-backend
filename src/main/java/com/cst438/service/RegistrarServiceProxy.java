@@ -23,7 +23,20 @@ public class RegistrarServiceProxy {
 
     @RabbitListener(queues = "gradebook_service")
     public void receiveFromRegistrar(String message)  {
-        //TODO implement this message
+        /// receiving messages from registrar service
+        try {
+            // debugging
+            System.out.println("receiving messages from registrar "+ message);
+            String[] parts = message.split(" ", 2);
+            // what should our parts[0] be equal to??
+
+
+
+        } catch(Exception e){
+
+        }
+
+
     }
 
 
