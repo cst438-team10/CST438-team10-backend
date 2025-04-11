@@ -30,13 +30,9 @@ public class RegistrarServiceProxy {
             String[] parts = message.split(" ", 2);
             // what should our parts[0] be equal to??
 
-
-
         } catch(Exception e){
 
         }
-
-
     }
 
 
