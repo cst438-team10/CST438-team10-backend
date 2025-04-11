@@ -132,9 +132,10 @@ public class RegistrarServiceProxy {
             else if (parts[0].equals("updateUser")) {
                 User user = userRepository.findById(Integer.parseInt(parts[1])).orElse(null);
                 if (user == null) {
-                    System.out.println("Error recievedFromRegistrar: user not found");
+                    System.out.println("Error receivedFromRegistrar: user not found");
                 }
                 UserDTO udto = fromJsonString(parts[1], UserDTO.class);
+                assert user != null;
                 user.setId(udto.id());
                 user.setName(udto.name());
                 user.setEmail(udto.email());
