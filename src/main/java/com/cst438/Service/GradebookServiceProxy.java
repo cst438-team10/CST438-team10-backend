@@ -1,6 +1,9 @@
 package com.cst438.Service;
 
+import com.cst438.domain.Enrollment;
+import com.cst438.domain.EnrollmentRepository;
 import com.cst438.dto.CourseDTO;
+import com.cst438.dto.EnrollmentDTO;
 import com.cst438.dto.SectionDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.core.Queue;
@@ -13,6 +16,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class GradebookServiceProxy {
 
+    @Autowired
+    EnrollmentRepository enrollmentRepository;
     Queue gradebookServiceQueue = new Queue("gradebook_service", true);
 
     @Bean
@@ -38,7 +43,23 @@ public class GradebookServiceProxy {
 
     @RabbitListener(queues = "registrar_service")
     public void receiveFromGradebook(String message)  {
-        //TODO implement this message
+        //receive message from Gradebook service
+        try {
+            System.out.println("receive from Gradebook " + message);
+            String[] parts = message.split(" ", 2);
+            if (parts[0].equals("updateEnrollment")) {
+                EnrollmentDTO dto = fromJsonString(parts[1], EnrollmentDTO.class);
+                Enrollment e = enrollmentRepository.findById(dto.enrollmentId()).orElse(null);
+                if (e == null) {
+                    System.out.println("Error receiveFromGradebook: Enrollment not found " + dto.enrollmentId());
+                } else {
+                    e.setGrade(dto.grade());
+                    enrollmentRepository.save(e);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Exception in receivedFromGradebook: "+ e.getMessage());
+        }
     }
 
 
