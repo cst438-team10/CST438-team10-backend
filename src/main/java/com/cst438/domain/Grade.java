@@ -14,7 +14,7 @@ public class Grade {
     // TODO complete this class
     // add additional attribute for score that is nullable
     @Column (nullable = true)
-    Integer score;
+    float score;
     // add relationship between grade and assignment entities
     @ManyToOne
     @JoinColumn(name = "assignment_id", nullable = false)
@@ -33,11 +33,11 @@ public class Grade {
         this.gradeId = gradeId;
     }
 
-    public Integer getScore() {
+    public float getScore() {
         return score;
     }
 
-    public void setScore(Integer score) {
+    public void setScore(float score) {
         this.score = score;
     }
 
