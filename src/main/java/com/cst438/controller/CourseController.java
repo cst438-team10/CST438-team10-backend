@@ -1,5 +1,6 @@
 package com.cst438.controller;
 
+import com.cst438.Service.GradebookServiceProxy;
 import com.cst438.domain.*;
 import com.cst438.dto.CourseDTO;
 import com.cst438.dto.SectionDTO;
@@ -34,6 +35,9 @@ public class CourseController {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    GradebookServiceProxy gradebookServiceProxy;
+
     
     // ADMIN function to create a new course
     @PostMapping("/courses")
@@ -43,6 +47,7 @@ public class CourseController {
         c.setTitle(course.title());
         c.setCourseId(course.courseId());
         courseRepository.save(c);
+        gradebookServiceProxy.addCourse(course);
         return new CourseDTO(
                 c.getCourseId(),
                 c.getTitle(),
@@ -60,6 +65,7 @@ public class CourseController {
             c.setTitle(course.title());
             c.setCredits(course.credits());
             courseRepository.save(c);
+            gradebookServiceProxy.updateCourse(course);
             return new CourseDTO(
                     c.getCourseId(),
                     c.getTitle(),
@@ -73,6 +79,7 @@ public class CourseController {
     @DeleteMapping("/courses/{courseid}")
     public void deleteCourse(@PathVariable String courseid) {
         Course c = courseRepository.findById(courseid).orElse(null);
+        gradebookServiceProxy.deleteCourse(courseid);
         // if course does not exist, do nothing.
         if (c!=null) {
             courseRepository.delete(c);

@@ -1,5 +1,6 @@
 package com.cst438.controller;
 
+import com.cst438.Service.GradebookServiceProxy;
 import com.cst438.domain.*;
 import com.cst438.dto.SectionDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,8 @@ public class SectionController {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    GradebookServiceProxy gradebookServiceProxy;
 
     // ADMIN function to create a new section
     @PostMapping("/sections")
@@ -61,6 +64,7 @@ public class SectionController {
         }
 
         sectionRepository.save(s);
+        gradebookServiceProxy.addSection(section);
         return new SectionDTO(
                 s.getSectionNo(),
                 s.getTerm().getYear(),
@@ -99,6 +103,7 @@ public class SectionController {
             }
             s.setInstructor_email(section.instructorEmail());
         }
+        gradebookServiceProxy.updateSection(section);
         sectionRepository.save(s);
     }
 
@@ -107,6 +112,7 @@ public class SectionController {
     @DeleteMapping("/sections/{sectionno}")
     public void deleteSection(@PathVariable int sectionno) {
         Section s = sectionRepository.findById(sectionno).orElse(null);
+        gradebookServiceProxy.deleteSection(sectionno);
         if (s != null) {
             sectionRepository.delete(s);
         }

@@ -1,5 +1,6 @@
 package com.cst438.controller;
 
+import com.cst438.Service.GradebookServiceProxy;
 import com.cst438.domain.*;
 import com.cst438.dto.EnrollmentDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,9 @@ public class StudentScheduleController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    GradebookServiceProxy gradebookServiceProxy;
 
     /**
      students lists their transcript containing all enrollments
@@ -111,7 +115,7 @@ public class StudentScheduleController {
                 course.getCourseId(), course.getTitle(), section.getSecId(), section.getSectionNo(), section.getBuilding(),
                 section.getRoom(), section.getTimes(), course.getCredits(), term.getYear(), term.getSemester()
         );
-
+        gradebookServiceProxy.enrollInCourse(dto);
         return dto;
 
     }
@@ -138,7 +142,7 @@ public class StudentScheduleController {
         if (currentDate.after(term.getDropDeadline())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "drop deadline has passed");
         }
-
+        gradebookServiceProxy.dropCourse(enrollmentId);
         // delete the enrollment entity
         enrollmentRepository.delete(enrollment);
     }
