@@ -10,8 +10,8 @@ public class Enrollment {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name="enrollment_id")
     int enrollmentId;
-    @OneToMany(mappedBy = "enrollment", cascade = CascadeType.REMOVE)
-    List<Grade> grades;
+//    @OneToMany(mappedBy = "enrollment", cascade = CascadeType.REMOVE)
+//    List<Grade> grades;
 	// TODO complete this class
     // add additional attribute for grade
     String grade;

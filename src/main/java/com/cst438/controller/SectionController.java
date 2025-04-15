@@ -3,6 +3,7 @@ package com.cst438.controller;
 import com.cst438.Service.GradebookServiceProxy;
 import com.cst438.domain.*;
 import com.cst438.dto.SectionDTO;
+import com.cst438.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -191,10 +192,11 @@ public class SectionController {
         return dto_list;
     }
 
-    @GetMapping("/user")
-    public User getUserByEmail(@RequestParam("email") String email) {
-        return userRepository.findByEmail(email);
-    }
+     @GetMapping("/user")
+     public UserDTO getUserByEmail(@RequestParam("email") String email) {
+       User user = userRepository.findByEmail(email);
+       return new UserDTO(user.getId(), user.getEmail(), user.getName(), user.getType());
+     }
     // return sections that are related to the term where today's date is between
     // the add_date and the add_deadline of the term
     @GetMapping("/sections/open")
