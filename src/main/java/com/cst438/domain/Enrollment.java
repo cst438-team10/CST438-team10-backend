@@ -11,6 +11,7 @@ public class Enrollment {
     @Column(name="enrollment_id")
     int enrollmentId;
 //    @OneToMany(mappedBy = "enrollment", cascade = CascadeType.REMOVE)
+
 //    List<Grade> grades;
 	// TODO complete this class
     // add additional attribute for grade
