@@ -64,7 +64,8 @@ public class EnrollmentController {
                     orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "One or more enrollments were not found"));
             enrollment.setGrade(e.grade());
             enrollmentRepository.save(enrollment);
-            registrarServiceProxy.updateEnrollment(enrollment.getEnrollmentId());
+
+            registrarServiceProxy.updateEnrollment(e);
         }
     }
 

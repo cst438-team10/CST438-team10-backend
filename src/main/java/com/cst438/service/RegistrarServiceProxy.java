@@ -41,8 +41,8 @@ public class RegistrarServiceProxy {
     @Autowired
     RabbitTemplate rabbitTemplate;
 
-    public void updateEnrollment(int enrollmentId){
-        sendMessage("updateEnrollment "+enrollmentId);
+    public void updateEnrollment(EnrollmentDTO enrollmentDTO) {
+        sendMessage("updateEnrollment "+ asJsonString(enrollmentDTO));
     }
 
 
