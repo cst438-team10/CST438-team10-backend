@@ -1,6 +1,8 @@
 package com.cst438.domain;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.List;
 
@@ -19,6 +21,7 @@ public class Enrollment {
     // create relationship between enrollment and user entities
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User student;
     // create relationship between enrollment and section entities
     @ManyToOne

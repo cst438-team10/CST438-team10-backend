@@ -37,28 +37,28 @@ public class GradebookServiceProxy {
     }
 
     public void addSection(SectionDTO section){
-        sendMessage("addSection "+section);
+        sendMessage("addSection "+asJsonString(section));
     }
     public void updateSection(SectionDTO section){
-        sendMessage("updateSection "+section);
+        sendMessage("updateSection "+asJsonString(section));
     }
     public void deleteSection(int sectionId){
-        sendMessage("addSection "+sectionId);
+        sendMessage("deleteSection "+sectionId);
     }
     public void addUser(UserDTO user){
-        sendMessage("addUser "+user);
+        sendMessage("addUser "+asJsonString(user));
     }
     public void updateUser(UserDTO user){
-        sendMessage("updateUser "+user);
+        sendMessage("updateUser "+asJsonString(user));
     }
     public void deleteUser(int userId){
-        sendMessage("addUser "+userId);
+        sendMessage("deleteUser "+userId);
     }
     public void enrollInCourse(EnrollmentDTO enrollment){
-        sendMessage("addUser "+enrollment);
+        sendMessage("createEnrollment "+asJsonString(enrollment));
     }
     public void dropCourse(int enrollmentId){
-        sendMessage("updateUser "+enrollmentId);
+        sendMessage("deleteEnrollment "+enrollmentId);
     }
 
     @Autowired
