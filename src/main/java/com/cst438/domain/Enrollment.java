@@ -1,6 +1,8 @@
 package com.cst438.domain;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.List;
 
@@ -21,6 +23,7 @@ public class Enrollment {
     // create relationship between enrollment and section entities
     @ManyToOne
     @JoinColumn(name = "section_no")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Section section;
 
     // add getter/setter methods

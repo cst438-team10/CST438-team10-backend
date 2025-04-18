@@ -61,8 +61,11 @@ public class RegistrarServiceProxy {
                 course.setTitle(dto.title());
                 course.setCredits(dto.credits());
                 courseRepository.save(course);
-            } else if (parts[0].equals("deleteCourse)")) {
-                courseRepository.deleteById(parts[1]);
+            } else if (parts[0].equals("deleteCourse")) {
+                Course c = courseRepository.findById(parts[1]).orElse(null);
+                if (c!=null) {
+                    courseRepository.delete(c);
+                }
             } else if (parts[0].equals("updateCourse")) {
                 CourseDTO dto = fromJsonString(parts[1], CourseDTO.class);
                 Course course = courseRepository.findById(dto.courseId()).orElse(null);
@@ -96,6 +99,7 @@ public class RegistrarServiceProxy {
             } else if (parts[0].equals("updateSection")) {
                 SectionDTO dto = fromJsonString(parts[1], SectionDTO.class);
                 Course course = courseRepository.findById(dto.courseId()).orElse(null);
+
                 if (course  == null){
                     System.out.println("Error receivedFromRegistrar: course not found");
                 }else {
@@ -130,18 +134,14 @@ public class RegistrarServiceProxy {
                 userRepository.deleteById(Integer.parseInt(parts[1]));
             }
             else if (parts[0].equals("updateUser")) {
-                User user = userRepository.findById(Integer.parseInt(parts[1])).orElse(null);
-                if (user == null) {
-                    System.out.println("Error receivedFromRegistrar: user not found");
-                }
                 UserDTO udto = fromJsonString(parts[1], UserDTO.class);
+                User user = userRepository.findById(udto.id()).orElse(null);
                 assert user != null;
                 user.setId(udto.id());
                 user.setName(udto.name());
                 user.setEmail(udto.email());
                 user.setType(udto.type());
-                BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-                user.setPassword(encoder.encode(udto.name()+"2024"));
+
                 userRepository.save(user);
             } else if (parts[0].equals("createEnrollment")){
                 Enrollment enrollment = new Enrollment();
@@ -164,6 +164,7 @@ public class RegistrarServiceProxy {
             }
         } catch(Exception e) {
             System.out.println("Exception in receivedFromRegistrar: "+e.getMessage());
+            System.out.println(e);
         }
     }
     private void sendMessage(String s) {
