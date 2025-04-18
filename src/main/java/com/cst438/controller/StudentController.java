@@ -9,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,6 +27,9 @@ public class StudentController {
     @Autowired
     GradeRepository gradeRepository;
 
+    @Autowired
+    UserRepository userRepository;
+
     /**
      students lists there enrollments given year and semester value
      returns list of enrollments, may be empty
@@ -36,10 +40,10 @@ public class StudentController {
    public List<EnrollmentDTO> getSchedule(
            @RequestParam("year") int year,
            @RequestParam("semester") String semester,
-           @RequestParam("studentId") int studentId) {
+           Principal principal) {
        //  hint: use enrollment repository method findByYearAndSemesterOrderByCourseId
-
-       List<Enrollment> enrollments = enrollmentRepository.findByYearAndSemesterOrderByCourseId(year, semester, studentId);
+       User user = userRepository.findByEmail(principal.getName());
+       List<Enrollment> enrollments = enrollmentRepository.findByYearAndSemesterOrderByCourseId(year, semester, user.getId());
        List<EnrollmentDTO> enrollmentDTOs = new ArrayList<>();
 
        for (Enrollment enrollment : enrollments) {
@@ -73,15 +77,13 @@ public class StudentController {
     @GetMapping("/assignments")
     @PreAuthorize("hasAuthority('SCOPE_ROLE_STUDENT')")
     public List<AssignmentStudentDTO> getStudentAssignments(
-            @RequestParam("studentId") int studentId,
+            Principal principal,
             @RequestParam("year") int year,
             @RequestParam("semester") String semester) {
 
-        // return a list of assignments and (if they exist) the assignment grade
-        //  for all sections that the student is enrolled for the given year and semester
-        //  hint: use the assignment repository method findByStudentIdAndYearAndSemesterOrderByDueDate
-        List<Assignment> assignments = assignmentRepository.findByStudentIdAndYearAndSemesterOrderByDueDate(studentId, year, semester);
-        List<Enrollment> enrollments = enrollmentRepository.findByYearAndSemesterOrderByCourseId(year, semester, studentId);
+        User user = userRepository.findByEmail(principal.getName());
+        List<Assignment> assignments = assignmentRepository.findByStudentIdAndYearAndSemesterOrderByDueDate(user.getId(), year, semester);
+        List<Enrollment> enrollments = enrollmentRepository.findByYearAndSemesterOrderByCourseId(year, semester, user.getId());
 
         List<AssignmentStudentDTO> assignmentDTOs = new ArrayList<>();
         for (Assignment assignment : assignments) {
