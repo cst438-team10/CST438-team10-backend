@@ -54,6 +54,7 @@ public class AssignmentController {
      logged in user must be the instructor for the section (assignment 7)
      */
     @PostMapping("/assignments")
+    @PreAuthorize("hasAuthority('SCOPE_ROLE_INSTRUCTOR')")
     public AssignmentDTO createAssignment(
             @RequestBody AssignmentDTO dto) {
 
@@ -94,7 +95,8 @@ public class AssignmentController {
      logged in user must be the instructor for the section (assignment 7)
      */
     @PutMapping("/assignments")
-    public AssignmentDTO updateAssignment(@RequestBody AssignmentDTO dto) {
+    @PreAuthorize("hasAuthority('SCOPE_ROLE_INSTRUCTOR')")
+    public AssignmentDTO updateAssignment(@RequestBody AssignmentDTO dto, Principal principal) {
         Assignment assignment = assignmentRepository.findById(dto.id()).orElse(null);
 
         if(assignment == null) {
@@ -114,7 +116,8 @@ public class AssignmentController {
      logged in user must be the instructor for the section (assignment 7)
      */
     @DeleteMapping("/assignments/{assignmentId}")
-    public void deleteAssignment(@PathVariable("assignmentId") int assignmentId) {
+    @PreAuthorize("hasAuthority('SCOPE_ROLE_INSTRUCTOR')")
+    public void deleteAssignment(@PathVariable("assignmentId") int assignmentId, Principal principal) {
         if (!assignmentRepository.existsById(assignmentId)) {
             System.out.println("No Assignment found with id: "+ assignmentId);
             return;
