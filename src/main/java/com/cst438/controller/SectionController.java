@@ -113,8 +113,6 @@ public class SectionController {
     @DeleteMapping("/sections/{sectionno}")
     @PreAuthorize("hasAuthority('SCOPE_ROLE_ADMIN')")
     public void deleteSection(@PathVariable int sectionno, Principal principal) {
-
-
         Section s = sectionRepository.findById(sectionno).orElse(null);
         if (s != null) {
             sectionRepository.delete(s);
