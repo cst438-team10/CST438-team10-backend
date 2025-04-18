@@ -4,6 +4,7 @@ import com.cst438.domain.*;
 import com.cst438.dto.EnrollmentDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -33,6 +34,7 @@ public class StudentScheduleController {
      example URL  /transcript?studentId=19803
      */
     @GetMapping("/transcripts")
+    @PreAuthorize("hasAuthority('SCOPE_ROLE_STUDENT')")
     public List<EnrollmentDTO> getTranscript(Principal principal) {
         // list course_id, sec_id, title, credit, grade
         // hint: use enrollment repository method findEnrollmentByStudentIdOrderByTermId
@@ -61,9 +63,10 @@ public class StudentScheduleController {
      logged in user must be the student (assignment 7)
      */
     @PostMapping("/enrollments/sections/{sectionNo}")
+    @PreAuthorize("hasAuthority('SCOPE_ROLE_STUDENT')")
     public EnrollmentDTO addCourse(
             @PathVariable int sectionNo,
-            @RequestParam("studentId") int studentId ) {
+            Principal principal) {
 
         // TODOdone
 
@@ -80,9 +83,9 @@ public class StudentScheduleController {
         if (currentDate.before(term.getAddDate()) || currentDate.after(term.getAddDeadline())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "enrollment closed");
         }
-
+        User user = userRepository.findByEmail(principal.getName());
         // check that student is not already enrolled into this section
-        Enrollment existing = enrollmentRepository.findEnrollmentBySectionNoAndStudentId(sectionNo, studentId);
+        Enrollment existing = enrollmentRepository.findEnrollmentBySectionNoAndStudentId(sectionNo, user.getId());
         if (existing != null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "student already enrolled in this section");
         }
@@ -90,7 +93,7 @@ public class StudentScheduleController {
         // create a new enrollment entity and save.  The enrollment grade will
         // be NULL until instructor enters final grades for the course.
 
-        Optional<User> userOpt = userRepository.findById(studentId);
+        Optional<User> userOpt = userRepository.findById(user.getId());
         if (userOpt.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "student not found");
         }
@@ -119,6 +122,7 @@ public class StudentScheduleController {
      logged in user must be the student (assignment 7)
      */
     @DeleteMapping("/enrollments/{enrollmentId}")
+    @PreAuthorize("hasAuthority('SCOPE_ROLE_STUDENT')")
     public void dropCourse(@PathVariable("enrollmentId") int enrollmentId) {
 
         // TODOdone
