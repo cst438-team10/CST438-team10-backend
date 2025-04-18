@@ -36,6 +36,7 @@ public class StudentController {
      logged in user must be the student (assignment 7)
      */
    @GetMapping("/enrollments")
+   @PreAuthorize("hasAuthority('SCOPE_ROLE_STUDENT')")
    public List<EnrollmentDTO> getSchedule(
            @RequestParam("year") int year,
            @RequestParam("semester") String semester,
