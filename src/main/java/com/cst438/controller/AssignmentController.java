@@ -46,7 +46,8 @@ public class AssignmentController {
         }
         List<AssignmentDTO> assignmentDTOs = new ArrayList<>();
         for (Assignment assignment : assignments) {
-            assignmentDTOs.add(new AssignmentDTO(assignment.getAssignmentId(), assignment.getTitle(), assignment.getDueDate().toString(), assignment.getSection().getCourse().toString(), assignment.getSection().getSecId(), assignment.getSection().getSectionNo()));
+            assignmentDTOs.add(new AssignmentDTO(assignment.getAssignmentId(), assignment.getTitle(), assignment.getDueDate().toString(),
+                    assignment.getSection().getCourse().toString(), assignment.getSection().getSecId(), assignment.getSection().getSectionNo()));
         }
 
         return assignmentDTOs;
