@@ -47,7 +47,6 @@ public class SectionController {
             throw  new ResponseStatusException( HttpStatus.NOT_FOUND, "year, semester invalid ");
         }
         s.setTerm(term);
-
         s.setSecId(section.secId());
         s.setBuilding(section.building());
         s.setRoom(section.room());
@@ -65,13 +64,12 @@ public class SectionController {
         }
 
         sectionRepository.save(s);
-        gradebookServiceProxy.addSection(section);
-        return new SectionDTO(
+        SectionDTO sDTO = new SectionDTO(
                 s.getSectionNo(),
                 s.getTerm().getYear(),
                 s.getTerm().getSemester(),
                 s.getCourse().getCourseId(),
-		s.getCourse().getTitle(),
+                s.getCourse().getTitle(),
                 s.getSecId(),
                 s.getBuilding(),
                 s.getRoom(),
@@ -79,6 +77,8 @@ public class SectionController {
                 (instructor!=null) ? instructor.getName() : "",
                 (instructor!=null) ? instructor.getEmail() : ""
         );
+        gradebookServiceProxy.addSection(sDTO);
+        return sDTO;
     }
 
     // ADMIN function to update a section
@@ -89,6 +89,7 @@ public class SectionController {
         if (s==null) {
             throw  new ResponseStatusException( HttpStatus.NOT_FOUND, "section not found "+section.secNo());
         }
+        s.setSectionNo(section.secNo());
         s.setSecId(section.secId());
         s.setBuilding(section.building());
         s.setRoom(section.room());
@@ -104,7 +105,18 @@ public class SectionController {
             }
             s.setInstructor_email(section.instructorEmail());
         }
-        gradebookServiceProxy.updateSection(section);
+        SectionDTO sDTO = new SectionDTO(s.getSectionNo(),
+                s.getTerm().getYear(),
+                s.getTerm().getSemester(),
+                s.getCourse().getCourseId(),
+                s.getCourse().getTitle(),
+                s.getSecId(),
+                s.getBuilding(),
+                s.getRoom(),
+                s.getTimes(),
+                (instructor!=null) ? instructor.getName() : "",
+                (instructor!=null) ? instructor.getEmail() : "");
+        gradebookServiceProxy.updateSection(sDTO);
         sectionRepository.save(s);
     }
 

@@ -26,6 +26,7 @@ public class Enrollment {
     // create relationship between enrollment and section entities
     @ManyToOne
     @JoinColumn(name = "section_no")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Section section;
 
     // add getter/setter methods

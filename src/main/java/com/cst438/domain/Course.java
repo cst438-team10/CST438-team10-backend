@@ -1,8 +1,8 @@
 package com.cst438.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 public class Course {
@@ -11,8 +11,18 @@ public class Course {
     private String courseId;
     private String title;
     private int credits;
+    @OneToMany(mappedBy="course", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Section> section;
 
-     public String getTitle() {
+    public List<Section> getSection() {
+        return section;
+    }
+
+    public void setSection(List<Section> section) {
+        this.section = section;
+    }
+
+    public String getTitle() {
         return title;
     }
     public void setTitle(String title) {

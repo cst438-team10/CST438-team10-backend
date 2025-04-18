@@ -62,8 +62,9 @@ public class UserController {
             throw  new ResponseStatusException( HttpStatus.BAD_REQUEST, "invalid user type");
         }
         userRepository.save(user);
-        gradebookServiceProxy.addUser(userDTO);
-        return new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getType());
+        UserDTO uDTO = new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getType());
+        gradebookServiceProxy.addUser(uDTO);
+        return uDTO;
     }
 
     /**
@@ -85,8 +86,9 @@ public class UserController {
             throw  new ResponseStatusException( HttpStatus.BAD_REQUEST, "invalid user type");
         }
         userRepository.save(user);
-        gradebookServiceProxy.updateUser(userDTO);
-        return new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getType());
+        UserDTO updatedUser = new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getType());
+        gradebookServiceProxy.updateUser(updatedUser);
+        return updatedUser;
     }
 
     /**

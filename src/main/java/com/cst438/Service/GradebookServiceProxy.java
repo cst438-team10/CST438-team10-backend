@@ -99,6 +99,7 @@ public class GradebookServiceProxy {
      * @param s
      */
     private void sendMessage(String s) {
+        System.out.println("Registrar to Gradebook " + s);
         rabbitTemplate.convertAndSend(gradebookServiceQueue.getName(), s);
     }
     private static String asJsonString(final Object obj) {

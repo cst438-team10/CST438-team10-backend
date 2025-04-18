@@ -1,6 +1,8 @@
 package com.cst438.domain;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.sql.Date;
 import java.util.List;
@@ -14,6 +16,7 @@ public class Section {
     private int sectionNo;  // unique id assigned by database.  Used to enroll into a section.
     @ManyToOne
     @JoinColumn(name="course_id", nullable=false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Course course;
     @ManyToOne
     @JoinColumn(name="term_id", nullable=false)
@@ -28,7 +31,7 @@ public class Section {
 
     // TODO  uncomment the following lines
 
-    @OneToMany(mappedBy="section")
+    @OneToMany(mappedBy="section", cascade = CascadeType.REMOVE, orphanRemoval = true)
     List<Enrollment> enrollments;
 
 //    @OneToMany(mappedBy="section")
