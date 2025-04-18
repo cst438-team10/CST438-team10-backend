@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,16 +33,12 @@ public class StudentScheduleController {
      example URL  /transcript?studentId=19803
      */
     @GetMapping("/transcripts")
-    public List<EnrollmentDTO> getTranscript(@RequestParam("studentId") int studentId) {
-
-        // TODOdone
-
-
+    public List<EnrollmentDTO> getTranscript(@RequestParam("studentId") Principal principal) {
         // list course_id, sec_id, title, credit, grade
         // hint: use enrollment repository method findEnrollmentByStudentIdOrderByTermId
         // remove the following line when done
-
-        List<Enrollment> enrollments = enrollmentRepository.findEnrollmentsByStudentIdOrderByTermId(studentId);
+        User user = userRepository.findByEmail(principal.getName());
+        List<Enrollment> enrollments = enrollmentRepository.findEnrollmentsByStudentIdOrderByTermId(user.getId());
         List<EnrollmentDTO> dtos = new ArrayList<>();
         for (Enrollment e : enrollments) {
             Section s = e.getSection();
