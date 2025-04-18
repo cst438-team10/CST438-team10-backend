@@ -4,12 +4,15 @@ import com.cst438.domain.*;
 import com.cst438.dto.AssignmentDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.security.Principal;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +33,9 @@ public class AssignmentController {
      logged in user must be the instructor for the section (assignment 7)
      */
     @GetMapping("/sections/{secNo}/assignments")
+    @PreAuthorize("hasAuthority('SCOPE_ROLE_INSTRUCTOR')")
     public List<AssignmentDTO> getAssignments(
-            @PathVariable("secNo") int secNo) {
+            @PathVariable("secNo") int secNo, Principal principal) {
 		// hint: use the assignment repository method 
 		//  findBySectionNoOrderByDueDate to return 
 		//  a list of assignments
@@ -56,7 +60,7 @@ public class AssignmentController {
     @PostMapping("/assignments")
     @PreAuthorize("hasAuthority('SCOPE_ROLE_INSTRUCTOR')")
     public AssignmentDTO createAssignment(
-            @RequestBody AssignmentDTO dto) {
+            @RequestBody AssignmentDTO dto, Principal principal) {
 
         // Get the existing section from the database
         Section section = sectionRepository.findById(dto.secNo())
