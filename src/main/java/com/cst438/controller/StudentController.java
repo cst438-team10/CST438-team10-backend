@@ -5,6 +5,7 @@ import com.cst438.dto.AssignmentStudentDTO;
 import com.cst438.dto.EnrollmentDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -31,6 +32,7 @@ public class StudentController {
      logged in user must be the student (assignment 7)
      */
    @GetMapping("/enrollments")
+   @PreAuthorize("hasAuthority('SCOPE_ROLE_STUDENT')")
    public List<EnrollmentDTO> getSchedule(
            @RequestParam("year") int year,
            @RequestParam("semester") String semester,
@@ -69,6 +71,7 @@ public class StudentController {
      logged in user must be the student (assignment 7)
      */
     @GetMapping("/assignments")
+    @PreAuthorize("hasAuthority('SCOPE_ROLE_STUDENT')")
     public List<AssignmentStudentDTO> getStudentAssignments(
             @RequestParam("studentId") int studentId,
             @RequestParam("year") int year,
