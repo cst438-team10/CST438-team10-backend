@@ -119,7 +119,7 @@ public class SectionController {
         }
     }
 
-    // get Sections with query parms courseId, year, semester
+    // get Sections with query params courseId, year, semester
     @GetMapping("/courses/{courseId}/sections")
     public List<SectionDTO> getSections(
             @PathVariable("courseId") String courseId,
