@@ -4,9 +4,11 @@ import com.cst438.domain.*;
 import com.cst438.dto.GradeDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +32,8 @@ public class GradeController {
      logged in user must be the instructor for the section (assignment 7)
      */
     @GetMapping("/assignments/{assignmentId}/grades")
-    public List<GradeDTO> getAssignmentGrades(@PathVariable("assignmentId") int assignmentId) {
+    @PreAuthorize("hasAuthority('SCOPE_ROLE_INSTRUCTOR')")
+    public List<GradeDTO> getAssignmentGrades(@PathVariable("assignmentId") int assignmentId, Principal principal) {
         // get the list of enrollments for the section related to this assignment.
         // hint: use te enrollment repository method findEnrollmentsBySectionOrderByStudentName.
         // for each enrollment, get the grade related to the assignment and enrollment
@@ -66,7 +69,8 @@ public class GradeController {
      logged in user must be the instructor for the section (assignment 7)
      */
     @PutMapping("/grades")
-    public void updateGrades(@RequestBody List<GradeDTO> dlist) {
+    @PreAuthorize("hasAuthority('SCOPE_ROLE_INSTRUCTOR')")
+    public void updateGrades(@RequestBody List<GradeDTO> dlist, Principal principal) {
 
         // for each grade in the GradeDTO list, retrieve the grade entity
         // update the score and save the entity
