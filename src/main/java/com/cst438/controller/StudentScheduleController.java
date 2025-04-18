@@ -33,7 +33,7 @@ public class StudentScheduleController {
      example URL  /transcript?studentId=19803
      */
     @GetMapping("/transcripts")
-    public List<EnrollmentDTO> getTranscript(@RequestParam("studentId") Principal principal) {
+    public List<EnrollmentDTO> getTranscript(Principal principal) {
         // list course_id, sec_id, title, credit, grade
         // hint: use enrollment repository method findEnrollmentByStudentIdOrderByTermId
         // remove the following line when done
