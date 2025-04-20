@@ -12,6 +12,7 @@ insert into user_table (id, name, email, password, type) values
 (3, 'thomas edison', 'tedison@csumb.edu', '', 'STUDENT'),
 (4, 'fred brooks', 'fbrooks@csumb.edu', '', 'ADMIN'),
 (5, 'user', 'user@csumb.edu', '$2a$10$NVM0n8ElaRgg7zWO1CxUdei7vWoPg91Lz2aYavh9.f9q0e4bRadue','STUDENT'),
+(7, 'user', 'user1@csumb.edu', '$2a$10$NVM0n8ElaRgg7zWO1CxUdei7vWoPg91Lz2aYavh9.f9q0e4bRadue','INSTRUCTOR'),
 (6, 'admin', 'admin@csumb.edu', '$2a$10$8cjz47bjbR4Mn8GMg9IZx.vyjhLXR/SKKMSZ9.mP9vpMu0ssKi8GW' , 'ADMIN');
 
 insert into course values
@@ -28,19 +29,19 @@ insert into course values
 insert into section(section_no, course_id, sec_id, term_id, building, room, times, instructor_email ) values
 (1, 'cst338', 1, 8, '052', '100', 'M W 10:00-11:50', 'jgross@csumb.edu'),
 (2, 'cst338', 2, 8, '052', '100', 'M W 10:00-11:50', 'jgross@csumb.edu'),
-(3, 'cst363', 1, 8, '052', '104', 'M W 10:00-11:50', 'dwisneski@csumb.edu'),
-(4, 'cst363', 2, 8, '052', '102', 'M W 2:00-3:50', 'dwisneski@csumb.edu'),
-(5, 'cst438', 1, 8, '052', '222', 'T Th 12:00-1:50', 'dwisneski@csumb.edu'),
+(3, 'cst363', 1, 8, '052', '104', 'M W 10:00-11:50', 'user1@csumb.edu'),
+(4, 'cst363', 2, 8, '052', '102', 'M W 2:00-3:50', 'user1@csumb.edu'),
+(5, 'cst438', 1, 8, '052', '222', 'T Th 12:00-1:50', 'user1@csumb.edu'),
 (6, 'cst338', 1, 9, '052', '100', 'M W 10:00-11:50', 'jgross@csumb.edu'),
 (7, 'cst338', 2, 9, '052', '100', 'M W 10:00-11:50', 'jgross@csumb.edu'),
-(8, 'cst363', 1, 9, '052', '104', 'M W 10:00-11:50', 'dwisneski@csumb.edu'),
-(9, 'cst363', 2, 9, '052', '102', 'M W 2:00-3:50', 'dwisneski@csumb.edu'),
-(10, 'cst438', 1, 9, '052', '222', 'T Th 12:00-1:50', 'dwisneski@csumb.edu');
+(8, 'cst363', 1, 9, '052', '104', 'M W 10:00-11:50', 'user1@csumb.edu'),
+(9, 'cst363', 2, 9, '052', '102', 'M W 2:00-3:50', 'user1@csumb.edu'),
+(10, 'cst438', 1, 9, '052', '222', 'T Th 12:00-1:50', 'user1@csumb.edu');
 
 insert into enrollment (enrollment_id, grade, section_no, user_id ) values
-(1, 'A', 1, 3),
-(2, 'B', 8, 3),
-(3,  null, 10, 3);
+(1, 'A', 1, 5),
+(2, 'B', 8, 5),
+(3,  null, 10, 5);
 
 insert into assignment (assignment_id, section_no, title, due_date) values
 ( 1, 8, 'db homework 1', '2025-02-01'),
