@@ -9,6 +9,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -73,8 +74,15 @@ public class StudentSystemTests {
      * --- student's schedule.
      * @throws Exception
      */
+    private void Login(String username, String password) {
+        driver.findElement(By.name("username")).sendKeys(username);
+        driver.findElement(By.name("password")).sendKeys(password);
+        driver.findElement(By.id("submit")).click();
+    }
     @Test
     public void systemTestEnroll () throws Exception {
+        Login("user@csumb.edu","user");
+        Thread.sleep(SLEEP_DURATION);
         String title = "Software Design";
         String section = "6";
 

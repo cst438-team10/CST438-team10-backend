@@ -73,12 +73,18 @@ public class InstructorSystemTests {
      * --- statements that verify the assignment was successfully created.
      * @throws Exception
      */
+    private void Login(String username, String password) {
+        driver.findElement(By.name("username")).sendKeys(username);
+        driver.findElement(By.name("password")).sendKeys(password);
+        driver.findElement(By.id("submit")).click();
+    }
     @Test
     public void systemTestAddAssignment() throws Exception {
         String assignmentName = "Visit Edmund's Planet";
         String dateDue = "03122025";
         String dueDateTable = "2025-03-12";
-
+        Login("user1@csumb.edu","user");
+        Thread.sleep(SLEEP_DURATION);
 
         driver.findElement(By.id("year")).sendKeys("2025");     //2025
         driver.findElement(By.id("semester")).sendKeys("Spring");       //Spring
@@ -123,7 +129,8 @@ public class InstructorSystemTests {
      */
     @Test
     public void systemTestGradeAssignment() throws Exception {
-
+        Login("user1@csumb.edu","user");
+        Thread.sleep(SLEEP_DURATION);
         driver.findElement(By.id("year")).sendKeys("2025");     //2025
         driver.findElement(By.id("semester")).sendKeys("Spring");       //Spring
         driver.findElement(By.cssSelector("a[href='/sections']")).click();
@@ -189,7 +196,8 @@ public class InstructorSystemTests {
      */
     @Test
     public void systemTestEnrollmentGrades() throws Exception {
-
+        Login("user1@csumb.edu","user");
+        Thread.sleep(SLEEP_DURATION);
         driver.findElement(By.id("year")).sendKeys("2025");     //2025
         driver.findElement(By.id("semester")).sendKeys("Spring");       //Spring
         driver.findElement(By.cssSelector("a[href='/sections']")).click();
